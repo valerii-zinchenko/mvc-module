@@ -56,7 +56,7 @@ function AClass(Constructor) {
         Class.prototype._defaults = {};
         // Clone default properties from parent class
         if (Class.parent._defaults) {
-            utils.deepExtend(Class.prototype._defaults, Class.parent._defaults);
+            utils.deepCopy(Class.prototype._defaults, Class.parent._defaults);
         }
         // Setup input properties to the new class
         for (key in props) {
@@ -71,11 +71,11 @@ function AClass(Constructor) {
                             if (!Class.prototype._defaults[key]) {
                                 Class.prototype._defaults[key] = {};
                             }
-                            utils.deepExtend(Class.prototype._defaults[key], value);
+                            utils.deepCopy(Class.prototype._defaults[key], value);
                             break;
                         }
-                    default :
-                            Class.prototype._defaults[key] = value;
+                    default:
+                        Class.prototype._defaults[key] = value;
                 }
             }
         }
