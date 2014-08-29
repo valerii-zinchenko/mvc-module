@@ -30,10 +30,6 @@ var utils = {
             value;
 
         for (key in source) {
-            if (!source.hasOwnProperty(key)) {
-                continue;
-            }
-
             value = source[key];
             switch (Object.prototype.toString.call(value)) {
                 case '[object Object]':
