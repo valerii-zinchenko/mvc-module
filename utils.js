@@ -75,7 +75,7 @@ var utils = {
 };
 
 function Template(fnTemplate) {
-    return fnTemplate.toString().split('\n').slice(1,-1).join('\n');
+    return fnTemplate.toString().match(/[^]*\/\*\*([^]*)\*\*\/\}$/)[1];
 }
 
 if (typeof module !== 'undefined' && module.exports) {
