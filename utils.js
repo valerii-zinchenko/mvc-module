@@ -74,13 +74,13 @@ var utils = {
     }
 };
 
-function View(fnTemplate) {
+function Template(fnTemplate) {
     return fnTemplate.toString().split('\n').slice(1,-1).join('\n');
 }
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         utils: utils,
-        View: View
+        Template: Template
     };
 }
