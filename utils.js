@@ -71,6 +71,12 @@ var utils = {
         }
 
         return target;
+    },
+    date: function(dateObj) {
+        if (dateObj && dateObj.constructor !== Date) {
+            throw new Error('Incorrect input argument type');
+        }
+        return (dateObj ? dateObj : new Date()).toISOString().slice(0,10);
     }
 };
 
