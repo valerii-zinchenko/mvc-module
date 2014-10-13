@@ -80,13 +80,8 @@ var utils = {
     }
 };
 
-function Template(fnTemplate) {
-    return fnTemplate.toString().match(/[^]*\/\*\*([^]*)\*\*\/\}$/)[1];
-}
-
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        utils: utils,
-        Template: Template
+        utils: utils
     };
 }
