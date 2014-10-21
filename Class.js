@@ -21,9 +21,29 @@
  All source files are available at: http://github.com/valerii-zinchenko/TaskOnFly
 */
 
+/**
+ * @file It contains the implementation of simple [class]{@link Class} creator.
+ *
+ * @see {@link AClass}
+ * @see {@link SingletonClass}
+ *
+ * @author Valerii Zinchenko
+ *
+ * @version 1.0.0
+ */
 
 'use strict';
 
+/**
+ * Simple Class creator function. This creator subroutine calls first the parent
+ * class constructor method ('initialize') and then the own class constructor method.
+ *
+ * @constructor
+ * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used
+ * if this argument will be omitted
+ * @param {Object} props - Defines the properties and methods for new class
+ * @returns {Function} Instance
+ */
 var Class = new AClass(function() {
     utils.deepExtend(this, this.constructor.prototype._defaults);
 

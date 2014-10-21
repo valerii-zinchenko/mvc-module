@@ -21,7 +21,38 @@
  All source files are available at: http://github.com/valerii-zinchenko/TaskOnFly
 */
 
+/**
+ * @file It contains the implementation of [AClass]{@link AClass}
+ *
+ * @see {@link Class}
+ * @see {@link SingletonClass}
+ *
+ * @author Valerii Zinchenko
+ *
+ * @version 1.0.0
+ */
 
+'use strict';
+
+/**
+ * Main abstract class creator. It takes the function that will be used as class constructor and wraps it,
+ * in order to automate constructor creation. Based on this abstract class creator it is possible to create
+ * usual well known Class as in low level programming language like C, C++, Java etc., or easy to implement
+ * Singleton pattern.
+ *
+ * The new created class constructor will have the reference to the parent class (in 'parent' property),
+ * inherited methods and merged '_default' property object.
+ *
+ * @constructor
+ * @param {Function} Constructor - Main class constructor subroutine.
+ * @returns {ClassConstructor} Class constructor.
+ *
+ * @throws {Error} Incorrect input arguments. Constructor function is not defined
+ * @throws {Error} Constructor should be an function
+ *
+ * @see {@link Class}
+ * @see {@link SingletonClass}
+ */
 function AClass(Constructor) {
     if (arguments.length === 0) {
         throw new Error('Incorrect input arguments. Constructor function is not defined');
@@ -30,6 +61,18 @@ function AClass(Constructor) {
         throw new Error('Constructor should be an function');
     }
 
+    /**
+     * Class constructor subroutine.
+     *
+     * @note This is just for documentation.
+     *
+     * @name ClassConstructor
+     * @constructor
+     * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used
+     * if this argument will be omitted
+     * @param {Object} props - Defines the properties and methods for new class
+     * @returns {Function} Instance
+     */
     return function(Parent, props){
         var Class, CoreClass, key, value;
 

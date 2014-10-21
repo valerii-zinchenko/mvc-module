@@ -21,9 +21,32 @@
  All source files are available at: http://github.com/valerii-zinchenko/TaskOnFly
 */
 
+/**
+ * @file It contains the implementation of [singleton class]{@link SingletonClass} creator.
+ *
+ * @see {@link AClass}
+ * @see {@link Class}
+ *
+ * @author Valerii Zinchenko
+ *
+ * @version 1.0.0
+ */
 
 'use strict';
 
+/**
+ * Singleton Class creator function. This will create a singleton class.
+ * This creator subroutine checks first if instance is already exist.
+ * If not then it will call the parent class constructor method ('initialize'),
+ * then the own class constructor method and store the instance.
+ * If the instance is already exist it will be returned.
+ *
+ * @constructor
+ * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used
+ * if this argument will be omitted
+ * @param {Object} props - Defines the properties and methods for new class
+ * @returns {Function} Instance
+ */
 var SingletonClass = new AClass(function() {
         if (this.constructor.instance) {
             return this.constructor.instance;
