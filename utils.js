@@ -22,9 +22,30 @@
 */
 
 
+/**
+ * @file It contains some [utility functions]{@link utils}.
+ *
+ * @author Valerii Zinchenko
+ *
+ * @version 1.0.3
+ */
+
 'use strict';
 
+/**
+ * Utility functions.
+ * @type {{deepCopy: deepCopy, deepExtend: deepExtend, date: date}}
+ */
 var utils = {
+    /**
+     * Make deep object copy.
+     * If some object property is already exist in target object - it will be replaced
+     * by the property from source object.
+     *
+     * @param {Object} target - Target object.
+     * @param {Object} source - Source object.
+     * @returns {Object} Target object.
+     */
     deepCopy: function(target, source) {
         var key,
             value;
@@ -45,6 +66,15 @@ var utils = {
 
         return target;
     },
+
+    /**
+     * Extend object deeply.
+     * Extend the target object with missed properties from source object.
+     *
+     * @param {Object} target - Target object.
+     * @param {Object} source - Source object.
+     * @returns {Object} Target object.
+     */
     deepExtend: function(target, source) {
         var key,
             value;
@@ -72,6 +102,16 @@ var utils = {
 
         return target;
     },
+
+    /**
+     * Convert Date object into plain date string.
+     * Conversion steps:
+     * 1. Call 'toISOString()' which converts the date into following format: 'YYYY-MM-DDTHH:MM:SS.MMMZ'
+     * 2. Make time and timezone offset invariant: 'YYYY-MM-DD'
+     *
+     * @param {Date} [dateObj] - Date object. If omitted 'new Date()' will be converted.
+     * @returns {string} 'YYYY-MM-DD'
+     */
     date: function(dateObj) {
         if (dateObj && dateObj.constructor !== Date) {
             throw new Error('Incorrect input argument type');
