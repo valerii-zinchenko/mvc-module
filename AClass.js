@@ -54,7 +54,7 @@
  * @see {@link SingletonClass}
  */
 function AClass(Constructor) {
-    if (arguments.length === 0) {
+    if (arguments.length != 1) {
         throw new Error('Incorrect input arguments. Constructor function is not defined');
     }
     if (typeof Constructor !== 'function') {
