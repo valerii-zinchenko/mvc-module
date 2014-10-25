@@ -34,11 +34,10 @@
 'use strict';
 
 /**
- * Main MVC module constructor.
+ * Main MVC module factory.
  * This automates the collecting of sub-modules (Model, View, Control) constructors
  * and creates a single module constructor.
  *
- * @type {AClass}
  * @constructor
  * @param {Object} MVCConstructors - Object of constructors for each sub-module
  * @param {ClassConstructor} [MVCConstructors.Model] - Constructor for Model sub-module
@@ -50,7 +49,7 @@
  * @throws {Error} No sub-module constructors are defined. At least one sub-module constructor should be defined
  * @throws {Error} {subModuleName} constructor should be a function
  */
-var MVCModule = new AClass(function(MVCConstructors) {
+function MVCModule(MVCConstructors) {
     if (arguments.length < 1) {
         throw new Error('Incorrect amount of input arguments');
     }
@@ -105,4 +104,4 @@ var MVCModule = new AClass(function(MVCConstructors) {
             }
         }, this);
     }
-});
+}
