@@ -99,7 +99,7 @@ function MVCModule(MVCConstructors) {
         objects.forEach(function(object, indx) {
             for (var n = 0, N = objects.length; n < N; n++) {
                 if (n != indx) {
-                    this[object] = this[objects[n]];
+                    this[object][objects[n]] = this[objects[n]];
                 }
             }
         }, this);
