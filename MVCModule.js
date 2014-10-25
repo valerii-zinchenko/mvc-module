@@ -40,28 +40,38 @@
  *
  * @type {AClass}
  * @constructor
- * @param {Object} MVCConstructors - Object of constructors for each sub-module. All constructors are required.
- * @param {ClassConstructor} MVCConstructors.Model - Constructor for Model sub-module.
- * @param {ClassConstructor} MVCConstructors.View - Constructor for View sub-module.
- * @param {ClassConstructor} MVCConstructors.Control - Constructor for Control sub-module.
+ * @param {Object} MVCConstructors - Object of constructors for each sub-module
+ * @param {ClassConstructor} [MVCConstructors.Model] - Constructor for Model sub-module
+ * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View sub-module
+ * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control sub-module
  * @return {ModuleConstructor}
  *
  * @throws {Error} Incorrect amount of input arguments
+ * @throws {Error} No sub-module constructors are defined. At least one sub-module constructor should be defined
+ * @throws {Error} {subModuleName} constructor should be a function
  */
 var MVCModule = new AClass(function(MVCConstructors) {
     if (arguments.length < 1) {
         throw new Error('Incorrect amount of input arguments');
     }
 
-    var MVC = ['Model', 'View', 'Control'];
-    var objects = MVC.map(function(key) {
-        return key.toLowerCase();
+    // Filter out the sub-module component names which will be combined in a single module.
+    var MVC = ['Model', 'View', 'Control'].filter(function(subModule) {
+        return !!MVCConstructors[subModule];
     });
 
+    if (MVC.length == 0) {
+        throw new Error('No sub-module constructors are defined. At least one sub-module constructor should be defined');
+    }
+
     MVC.forEach(function(Constructor) {
-        if (!MVCConstructors[Constructor]) {
-            throw new Error(Constructor + ' constructor is undefined');
+        if (typeof MVCConstructors[Constructor] !== 'function') {
+            throw new Error(Constructor + ' constructor should be a function');
         }
+    });
+
+    var objects = MVC.map(function(key) {
+        return key.toLowerCase();
     });
 
     /**
