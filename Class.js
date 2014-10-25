@@ -26,6 +26,7 @@
  *
  * @see {@link AClass}
  * @see {@link SingletonClass}
+ * @see {@link MVCModule}
  *
  * @author Valerii Zinchenko
  *
@@ -35,12 +36,13 @@
 'use strict';
 
 /**
- * Simple Class creator function. This creator subroutine calls first the parent
+ * Simple Class creator function.
+ * This creator subroutine calls first the parent
  * class constructor method ('initialize') and then the own class constructor method.
  *
+ * @type {AClass}
  * @constructor
- * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used
- * if this argument will be omitted
+ * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used if this argument will be omitted
  * @param {Object} props - Defines the properties and methods for new class
  * @returns {Function} Instance
  */

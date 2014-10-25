@@ -35,7 +35,8 @@
 'use strict';
 
 /**
- * Main abstract class creator. It takes the function that will be used as class constructor and wraps it,
+ * Main abstract class creator.
+ * It takes the function that will be used as class constructor and wraps it,
  * in order to automate constructor creation. Based on this abstract class creator it is possible to create
  * usual well known Class as in low level programming language like C, C++, Java etc., or easy to implement
  * Singleton pattern.
@@ -68,9 +69,8 @@ function AClass(Constructor) {
      *
      * @name ClassConstructor
      * @constructor
-     * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used
-     * if this argument will be omitted
-     * @param {Object} props - Defines the properties and methods for new class
+     * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used if this argument will be omitted
+     * @param {Object} props - Defines the properties and methods for a new class
      * @returns {Function} Instance
      */
     return function(Parent, props){
