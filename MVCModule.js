@@ -82,10 +82,10 @@ function MVCModule(MVCConstructors) {
      *
      * @name ModuleConstructor
      * @constructor
-     * @param {Object} [moduleArgs = {}] - Object of argument objects for each sub-module.
-     * @param {Object} [moduleArgs.model] - Input object argument for Model sub-module.
-     * @param {Object} [moduleArgs.view] - Input object argument for View sub-module.
-     * @param {Object} [moduleArgs.control] - Input object argument for Control sub-module.
+     * @param {Object} [moduleArgs = {}] - Object of input arguments for each sub-module.
+     * @param {*} [moduleArgs.model] - Input argument for Model sub-module.
+     * @param {*} [moduleArgs.view] - Input argument for View sub-module.
+     * @param {*} [moduleArgs.control] - Input argument for Control sub-module.
      */
     return function(moduleArgs) {
         moduleArgs = moduleArgs || {};
