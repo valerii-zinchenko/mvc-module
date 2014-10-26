@@ -24,8 +24,6 @@
 /**
  * @file It contains the implementation of [MVC module builder]{@link MVCModule}
  *
- * @see {@link AClass}
- *
  * @author Valerii Zinchenko
  *
  * @version 1.0.0
