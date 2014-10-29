@@ -26,7 +26,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.0.5
  */
 
 'use strict';
@@ -41,6 +41,7 @@
  * @param {ClassConstructor} [MVCConstructors.Model] - Constructor for Model sub-module
  * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View sub-module
  * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control sub-module
+ * @param {ClassConstructor} [MVCConstructors.initialize] - Module constructor. It is called after preparing of sub-modules.
  * @return {ModuleConstructor}
  *
  * @throws {Error} Incorrect amount of input arguments
@@ -84,6 +85,7 @@ function MVCModule(MVCConstructors) {
      * @param {*} [moduleArgs.model] - Input argument for Model sub-module.
      * @param {*} [moduleArgs.view] - Input argument for View sub-module.
      * @param {*} [moduleArgs.control] - Input argument for Control sub-module.
+     * @param {*} [moduleArgs.module] - Input argument for module constructor.
      */
     return function(moduleArgs) {
         moduleArgs = moduleArgs || {};
@@ -101,5 +103,10 @@ function MVCModule(MVCConstructors) {
                 }
             }
         }, this);
+
+        if (MVCConstructors.initialize) {
+            this.constructor.prototype.initialize = MVCConstructors.initialize;
+            this.constructor.prototype.initialize.apply(this, moduleArgs.module);
+        }
     }
 }
