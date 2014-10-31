@@ -110,3 +110,7 @@ function MVCModule(MVCConstructors) {
         }
     }
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = MVCModule;
+}

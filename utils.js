@@ -121,7 +121,5 @@ var utils = {
 };
 
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = {
-        utils: utils
-    };
+    module.exports = utils;
 }
