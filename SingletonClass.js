@@ -29,7 +29,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 'use strict';
@@ -49,22 +49,31 @@
  * @returns {Function} Instance
  */
 var SingletonClass = new AClass(function() {
-        if (this.constructor.instance) {
-            return this.constructor.instance;
-        }
-        this.constructor.instance = this;
-
-        utils.deepExtend(this, this.constructor.prototype._defaults);
-
-        if (this.constructor.parent && this.constructor.parent.hasOwnProperty('initialize')) {
-            this.constructor.parent.initialize.apply(this, arguments);
-        }
-        if (this.constructor.prototype.hasOwnProperty('initialize')) {
-            this.constructor.prototype.initialize.apply(this, arguments);
-        }
-
+    if (this.constructor.instance) {
         return this.constructor.instance;
-    });
+    }
+    this.constructor.instance = this;
+
+    utils.deepExtend(this, this.constructor.prototype._defaults);
+
+    if (this.constructor.parent) {
+        this.parent = {};
+        Object.keys(this.constructor.parent).forEach(function(key) {
+            if (this.constructor.parent.hasOwnProperty(key) && (typeof this.constructor.parent[key] === 'function')) {
+                this.parent[key] = this.constructor.parent[key].bind(this);
+            }
+        }, this);
+
+        if (this.parent.hasOwnProperty('initialize')) {
+            this.parent.initialize.apply(this, arguments);
+        }
+    }
+    if (this.constructor.prototype.hasOwnProperty('initialize')) {
+        this.constructor.prototype.initialize.apply(this, arguments);
+    }
+
+    return this.constructor.instance;
+});
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = SingletonClass;

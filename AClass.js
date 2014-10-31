@@ -76,7 +76,7 @@ function AClass(Constructor) {
     return function(Parent, props){
         var Class, CoreClass, key, value;
 
-        // Check input argumnets
+        // Check input arguments
         if (typeof Parent !== 'function') {
             props = Parent;
             Parent = Object;
