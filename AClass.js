@@ -105,11 +105,11 @@ function AClass(Constructor) {
         for (key in props) {
             if (props.hasOwnProperty(key)) {
                 value = props[key];
-                switch (typeof value) {
-                    case 'function':
+                switch (Object.prototype.toString.call(value)) {
+                    case '[object Function]':
                         Class.prototype[key] = value;
                         break;
-                    case 'object':
+                    case '[object Object]':
                         if (value) {
                             if (!Class.prototype._defaults[key]) {
                                 Class.prototype._defaults[key] = {};
