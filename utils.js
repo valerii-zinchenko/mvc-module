@@ -95,8 +95,11 @@ var utils = {
                     }
                     utils.deepExtend(target[key], value);
                     break;
+                case '[object Array]':
+                    target[key] = value.map(function(el) { return el; });
+                    break;
                 default :
-                    target[key] = value
+                    target[key] = value;
             }
         }
 
