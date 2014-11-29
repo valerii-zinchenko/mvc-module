@@ -123,7 +123,7 @@ var utils = {
         }
 
         // Remove timezone influence by calling tiISOString().
-        dateObj.setTime(dateObj.getTime() - dateObj.getTimezoneOffset()*60*1000);
+        dateObj.setTime(dateObj.getTime() - dateObj.getTimezoneOffset()*60000); // Convert minutes in milliseconds: 60000 = 60*10000
 
         return dateObj.toISOString().slice(0,10);
     }
