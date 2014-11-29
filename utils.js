@@ -116,10 +116,16 @@ var utils = {
      * @returns {string} 'YYYY-MM-DD'
      */
     date: function(dateObj) {
-        if (dateObj && dateObj.constructor !== Date) {
+        if (!dateObj) {
+            dateObj = new Date();
+        } else if (dateObj.constructor !== Date) {
             throw new Error('Incorrect input argument type');
         }
-        return (dateObj ? dateObj : new Date()).toISOString().slice(0,10);
+
+        // Remove timezone influence by calling tiISOString().
+        dateObj.setTime(dateObj.getTime() - dateObj.getTimezoneOffset()*60*1000);
+
+        return dateObj.toISOString().slice(0,10);
     }
 };
 
