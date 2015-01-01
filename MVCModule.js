@@ -26,51 +26,97 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.5
+ * @version 2.0.0
  */
 
 'use strict';
 
 /**
- * Main MVC module factory.
+ * State.
+ *
+ * @note This is for documentation only.
+ *
+ * @name State
+ * @type {Object}
+ * @property {Function} View - View constructor
+ * @property {Function} Control - Control constructor
+ */
+
+/**
+ * States.
+ * Array-like object of model states.
+ *
+ * @note This is for documentation only.
+ *
+ * @name States
+ * @type {Object}
+ * @property {State} stateName - Object of constructors for state with name "stateName"
+ */
+
+/**
+ * MVC module factory.
  * This automates the collecting of sub-modules (Model, View, Control) constructors
  * and creates a single module constructor.
  *
  * @constructor
  * @param {Object} MVCConstructors - Object of constructors for each sub-module
- * @param {ClassConstructor} [MVCConstructors.Model] - Constructor for Model sub-module
- * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View sub-module
- * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control sub-module
- * @param {ClassConstructor} [MVCConstructors.initialize] - Module constructor. It is called after preparing of sub-modules.
+ * @param {ClassConstructor} MVCConstructors.Model - Constructor for Model
+ * @param {States} states - Define model states. Each state should be an object and have the constructor for view and control
+ * @param {Function} [MVCConstructors.construct] - Module constructor function. It is called after preparing of sub-modules.
  * @return {ModuleConstructor}
  *
  * @throws {Error} Incorrect amount of input arguments
- * @throws {Error} No sub-module constructors are defined. At least one sub-module constructor should be defined
- * @throws {Error} {subModuleName} constructor should be a function
+ * @throws {Error} Incorrect type of input argument
+ * @throws {Error} Constructor for Model is not defined
+ * @throws {Error} Model constructor should be a function
+ * @throws {Error} No model states are defined
+ * @throws {Error} Incorrect type for defined model states
+ * @throws {Error} Incorrect type of state "{state}"
+ * @throws {Error} View constructor for state "{state}" is not defined
+ * @throws {Error} Control constructor for state "{state}" is not defined
+ * @throws {Error} construct property should be a function
  */
 function MVCModule(MVCConstructors) {
-    if (arguments.length < 1) {
+    if (arguments.length != 1) {
         throw new Error('Incorrect amount of input arguments');
     }
-
-    // Filter out the sub-module component names which will be combined in a single module.
-    var MVC = ['Model', 'View', 'Control'].filter(function(subModule) {
-        return !!MVCConstructors[subModule];
-    });
-
-    if (MVC.length == 0) {
-        throw new Error('No sub-module constructors are defined. At least one sub-module constructor should be defined');
+    if (Object.prototype.toString.call(MVCConstructors) != '[object Object]') {
+        throw new Error('Incorrect type of input argument');
+    }
+    if (!MVCConstructors.Model) {
+        throw new Error('Constructor for Model is not defined');
     }
 
-    MVC.forEach(function(Constructor) {
-        if (typeof MVCConstructors[Constructor] !== 'function') {
-            throw new Error(Constructor + ' constructor should be a function');
-        }
-    });
+    if (Object.prototype.toString.call(MVCConstructors.Model) != '[object Function]') {
+        throw new Error('Model constructor should be a function');
+    }
 
-    var objects = MVC.map(function(key) {
-        return key.toLowerCase();
-    });
+    if (!MVCConstructors.states) {
+        throw new Error('No model states are defined');
+    }
+    if (Object.prototype.toString.call(MVCConstructors.states) != '[object Object]') {
+        throw new Error('Incorrect type for defined model states');
+    }
+
+    for (var state in MVCConstructors.states) {
+        if (Object.prototype.toString.call(MVCConstructors.states[state]) != '[object Object]') {
+            throw new Error('Incorrect type of state "' + state + '"');
+        }
+
+        ['View', 'Control'].forEach(function(component) {
+            if (!MVCConstructors.states[state][component]) {
+                throw new Error(component + ' constructor for state "' + state + '" is not defined');
+            }
+            if (Object.prototype.toString.call(MVCConstructors.states[state][component]) != '[object Function]') {
+                throw new Error(component + ' constructor for state "' + state + '" should be a function');
+            }
+        });
+    }
+
+    if (MVCConstructors.construct && Object.prototype.toString.call(MVCConstructors.construct) != '[object Function]') {
+        throw new Error('construct property should be a function');
+    }
+
 
     /**
      * Module constructor.
@@ -83,34 +129,31 @@ function MVCModule(MVCConstructors) {
      * @constructor
      * @param {Object} [moduleArgs = {}] - Object of input arguments for each sub-module.
      * @param {*} [moduleArgs.model] - Input argument for Model sub-module.
-     * @param {*} [moduleArgs.view] - Input argument for View sub-module.
-     * @param {*} [moduleArgs.control] - Input argument for Control sub-module.
-     * @param {*} [moduleArgs.module] - Input argument for module constructor.
+     * @param {*} [moduleArgs.construct] - Input argument for module's construct().
      */
     return function(moduleArgs) {
         moduleArgs = moduleArgs || {};
 
         // Build each sub-module
-        MVC.forEach(function(Constructor, indx) {
-            this[objects[indx]] = new MVCConstructors[Constructor](moduleArgs[objects[indx]]);
-        }, this);
+        this.model = new MVCConstructors.Model(moduleArgs);
+        this.states = {};
+        for (var stateName in MVCConstructors.states) {
+            var state = {
+                view: new MVCConstructors.states[stateName].View(),
+                control: new MVCConstructors.states[stateName].Control()
+            };
 
-        // Populate module components for each other
-        objects.forEach(function(object, indx) {
-            for (var n = 0, N = objects.length; n < N; n++) {
-                if (n != indx) {
-                    this[object][objects[n]] = this[objects[n]];
-                }
-            }
-        }, this);
+            state.view.model = this.model;
+            state.view.control = state.control;
+            state.control.model = this.model;
+            state.control.view = state.view;
 
-        if (MVCConstructors.initialize) {
-            this.constructor.prototype.initialize = MVCConstructors.initialize;
-            this.constructor.prototype.initialize.apply(this, moduleArgs.module);
+            this.states[stateName] = state;
+        }
+
+        if (MVCConstructors.construct) {
+            this.constructor.prototype.construct = MVCConstructors.construct;
+            this.constructor.prototype.construct.apply(this, moduleArgs.construct);
         }
     }
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = MVCModule;
 }
