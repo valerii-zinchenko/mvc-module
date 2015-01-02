@@ -55,13 +55,13 @@
 
 /**
  * MVC module factory.
- * This automates the collecting of sub-modules (Model, View, Control) constructors
- * and creates a single module constructor.
  *
  * @constructor
  * @param {Object} MVCConstructors - Object of constructors for each sub-module
  * @param {ClassConstructor} MVCConstructors.Model - Constructor for Model
  * @param {States} states - Define model states. Each state should be an object and have the constructor for view and control
+ * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View. Usefull for modules with single state (without defining "states")
+ * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control. Usefull for modules with single state (without defining "states")
  * @param {Function} [MVCConstructors.construct] - Module constructor function. It is called after preparing of sub-modules.
  * @return {ModuleConstructor}
  *
@@ -91,8 +91,16 @@ function MVCModule(MVCConstructors) {
         throw new Error('Model constructor should be a function');
     }
 
-    if (!MVCConstructors.states) {
+    if (!MVCConstructors.states && !MVCConstructors.View && !MVCConstructors.Control) {
         throw new Error('No model states are defined');
+    }
+    if (!MVCConstructors.states) {
+        MVCConstructors.states = {
+            _default: {
+                View: MVCConstructors.View,
+                Control: MVCConstructors.Control
+            }
+        };
     }
     if (Object.prototype.toString.call(MVCConstructors.states) != '[object Object]') {
         throw new Error('Incorrect type for defined model states');
@@ -150,10 +158,39 @@ function MVCModule(MVCConstructors) {
 
             this.states[stateName] = state;
         }
+        this.view = null;
+        this.control = null;
+
+        /**
+         * Specify which state will be used.
+         * this.view and this.control will point to the View and Control of specific model state.
+         *
+         * @param {string} stateName - State name.
+         */
+        this.useState = function(stateName) {
+            if (arguments.length != 1) {
+                throw new Error('Incorrect amount of input arguments');
+            }
+            if (typeof stateName != 'string') {
+                throw new Error('Incorrect type of input argument');
+            }
+
+            var state = this.states[stateName];
+            if (!state) {
+                throw new Error('Undefined state "' + stateName + '"');
+            }
+
+            this.view = state.view;
+            this.control = state.control;
+        };
 
         if (MVCConstructors.construct) {
             this.constructor.prototype.construct = MVCConstructors.construct;
             this.constructor.prototype.construct.apply(this, moduleArgs.construct);
+        }
+
+        if (this.states._default) {
+            this.useState('_default');
         }
     }
 }
