@@ -143,7 +143,7 @@ function MVCModule(MVCConstructors) {
         moduleArgs = moduleArgs || {};
 
         // Build each sub-module
-        this.model = new MVCConstructors.Model(moduleArgs);
+        this.model = new (MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(moduleArgs.model)))();
         this.states = {};
         for (var stateName in MVCConstructors.states) {
             var state = {
@@ -180,8 +180,11 @@ function MVCModule(MVCConstructors) {
                 throw new Error('Undefined state "' + stateName + '"');
             }
 
-            this.view = state.view;
-            this.control = state.control;
+            return {
+                model: this.model,
+                view: state.view,
+                control: state.control
+            };
         };
 
         if (MVCConstructors.construct) {
@@ -190,7 +193,7 @@ function MVCModule(MVCConstructors) {
         }
 
         if (this.states._default) {
-            this.useState('_default');
+            return this.useState('_default');
         }
     }
 }
