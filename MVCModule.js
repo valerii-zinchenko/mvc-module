@@ -121,10 +121,6 @@ function MVCModule(MVCConstructors) {
         });
     }
 
-    if (MVCConstructors.construct && Object.prototype.toString.call(MVCConstructors.construct) != '[object Function]') {
-        throw new Error('construct property should be a function');
-    }
-
 
     /**
      * Module constructor.
@@ -136,14 +132,13 @@ function MVCModule(MVCConstructors) {
      * @name ModuleConstructor
      * @constructor
      * @param {Object} [moduleArgs = {}] - Object of input arguments for each sub-module.
-     * @param {*} [moduleArgs.model] - Input argument for Model sub-module.
-     * @param {*} [moduleArgs.construct] - Input argument for module's construct().
+     * @param {[*]} [arguments] - Input arguments for Model.
      */
-    return function(moduleArgs) {
-        moduleArgs = moduleArgs || {};
+    return function() {
+        var args = Array.prototype.slice.call(arguments);
 
         // Build each sub-module
-        this.model = new (MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(moduleArgs.model)))();
+        this.model = new (MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(args)));
         this.states = {};
         for (var stateName in MVCConstructors.states) {
             var state = {
@@ -186,11 +181,6 @@ function MVCModule(MVCConstructors) {
                 control: state.control
             };
         };
-
-        if (MVCConstructors.construct) {
-            this.constructor.prototype.construct = MVCConstructors.construct;
-            this.constructor.prototype.construct.apply(this, moduleArgs.construct);
-        }
 
         if (this.states._default) {
             return this.useState('_default');
