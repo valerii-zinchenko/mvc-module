@@ -54,27 +54,7 @@ var SingletonClass = new AClass(function() {
     }
     this.constructor.instance = this;
 
-    utils.deepExtend(this, this.constructor.prototype._defaults);
-
-    if (this.constructor.parent) {
-        this.parent = {};
-        Object.keys(this.constructor.parent).forEach(function(key) {
-            if (this.constructor.parent.hasOwnProperty(key) && (typeof this.constructor.parent[key] === 'function')) {
-                this.parent[key] = this.constructor.parent[key].bind(this);
-            }
-        }, this);
-
-        if (this.parent.hasOwnProperty('initialize')) {
-            this.parent.initialize.apply(this, arguments);
-        }
-    }
-    if (this.constructor.prototype.hasOwnProperty('initialize')) {
-        this.constructor.prototype.initialize.apply(this, arguments);
-    }
+    ClassConstructor.call(this);
 
     return this.constructor.instance;
 });
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = SingletonClass;
-}

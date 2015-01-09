@@ -128,7 +128,3 @@ var utils = {
         return dateObj.toISOString().slice(0,10);
     }
 };
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = utils;
-}

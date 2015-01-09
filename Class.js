@@ -36,6 +36,33 @@
 'use strict';
 
 /**
+ * Main class constructor.
+ * First it extends the current's class _default property.
+ * Then it constructs a class: first call all parent's class constructors and then current constructor.
+ */
+function ClassConstructor() {
+    utils.deepExtend(this, this.constructor.prototype._defaults);
+
+    if (this.constructor.parent) {
+        // Recursively call all parent's constructors, started from the top parent class
+        (function constructParentStack(context, child, args) {
+            var parent = child.constructor.parent;
+            if (parent) {
+                constructParentStack(context, parent, args);
+            }
+
+            if (child.hasOwnProperty('initialize')) {
+                child.initialize.apply(context, args);
+            }
+        })(this, this.constructor.parent, arguments);
+    }
+
+    if (this.constructor.prototype.hasOwnProperty('initialize')) {
+        this.constructor.prototype.initialize.apply(this, arguments);
+    }
+}
+
+/**
  * Simple Class creator function.
  * This creator subroutine calls first the parent
  * class constructor method ('initialize') and then the own class constructor method.
@@ -47,28 +74,8 @@
  * @returns {Function} Instance
  */
 var Class = new AClass(function() {
-    utils.deepExtend(this, this.constructor.prototype._defaults);
-
-    if (this.constructor.parent) {
-        this.parent = {};
-        Object.keys(this.constructor.parent).forEach(function(key) {
-            if (this.constructor.parent.hasOwnProperty(key) && (typeof this.constructor.parent[key] === 'function')) {
-                this.parent[key] = this.constructor.parent[key].bind(this);
-            }
-        }, this);
-
-        if (this.parent.hasOwnProperty('initialize')) {
-            this.parent.initialize.apply(this, arguments);
-        }
-    }
-    if (this.constructor.prototype.hasOwnProperty('initialize')) {
-        this.constructor.prototype.initialize.apply(this, arguments);
-    }
+    ClassConstructor.call(this);
 });
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = Class;
-}
 
 /*
 new Class({
@@ -83,4 +90,3 @@ new Class({
     }
 });
 */
-
