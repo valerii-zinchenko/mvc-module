@@ -138,7 +138,7 @@ function MVCModule(MVCConstructors) {
         var args = Array.prototype.slice.call(arguments);
 
         // Build each sub-module
-        this.model = new (MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(args)));
+        this.model = new (_.bind.apply(null, [MVCConstructors.Model, null].concat(args)));
         this.states = {};
         for (var stateName in MVCConstructors.states) {
             var state = {
