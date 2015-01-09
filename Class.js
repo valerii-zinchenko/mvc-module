@@ -74,7 +74,7 @@ function ClassConstructor() {
  * @returns {Function} Instance
  */
 var Class = new AClass(function() {
-    ClassConstructor.call(this);
+    ClassConstructor.apply(this, arguments);
 });
 
 /*

@@ -54,7 +54,7 @@ var SingletonClass = new AClass(function() {
     }
     this.constructor.instance = this;
 
-    ClassConstructor.call(this);
+    ClassConstructor.apply(this, arguments);
 
     return this.constructor.instance;
 });
