@@ -24,6 +24,8 @@
 /**
  * @file It contains the implementation of [MVC module builder]{@link MVCModule}
  *
+ * @requires underscore.js
+ *
  * @author Valerii Zinchenko
  *
  * @version 2.0.0
@@ -137,24 +139,28 @@ function MVCModule(MVCConstructors) {
     return function() {
         var args = Array.prototype.slice.call(arguments);
 
-        // Build each sub-module
+        // Build model
         this.model = new (_.bind.apply(null, [MVCConstructors.Model, null].concat(args)));
+
+        // Build model states
         this.states = {};
         for (var stateName in MVCConstructors.states) {
             var state = {
+                // Build state view
                 view: new MVCConstructors.states[stateName].View(),
+                // Build state control
                 control: new MVCConstructors.states[stateName].Control()
             };
 
+            // Connect model and control to the view
             state.view.model = this.model;
             state.view.control = state.control;
+            // Connect model and view to the control
             state.control.model = this.model;
             state.control.view = state.view;
 
             this.states[stateName] = state;
         }
-        this.view = null;
-        this.control = null;
 
         /**
          * Specify which state will be used.
