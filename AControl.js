@@ -21,8 +21,27 @@
  All source files are available at: http://github.com/valerii-zinchenko/TaskOnFly
 */
 
+/**
+ * @file It contains the implementation of [Abstract Control class]{@link AControl} creator.
+ *
+ * @see {@link Class}
+ * @see {@link MVCModule}
+ *
+ * @author Valerii Zinchenko
+ *
+ * @version 1.0.0
+ */
+
 'use strict';
 
+/**
+ * Abstract Control.
+ * It defines all required conpoments and methods for better and faster developing of specific control.
+ *
+ * @type {Class}
+ *
+ * @constructor
+ */
 var AControl = new Class({
     /**
      * Reference to the model.
