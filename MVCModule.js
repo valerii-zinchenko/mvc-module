@@ -153,11 +153,14 @@ function MVCModule(MVCConstructors) {
             };
 
             // Connect model and control to the view
-            state.view.model = this.model;
-            state.view.control = state.control;
+            state.view.setModel(this.model);
+            state.view.setControl(state.control);
             // Connect model and view to the control
-            state.control.model = this.model;
-            state.control.view = state.view;
+            state.control.setModel(this.model);
+            state.control.setView(state.view);
+
+			state.view.connect();
+			state.control.connect();
 
             this.states[stateName] = state;
         }

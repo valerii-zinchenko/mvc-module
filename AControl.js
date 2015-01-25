@@ -64,5 +64,31 @@ var AControl = new Class({
     destruct: function() {
         this.model = null;
         this.view = null;
-    }
+    },
+
+	/**
+	 * Set model
+	 *
+	 * @param {Object} model - Model
+	 */
+	setModel: function(model) {
+		this.model = model;
+	},
+
+	/**
+	 * Set view
+	 *
+	 * @param {Object} view - View
+	 */
+	setView: function(view) {
+		this.view = view;
+	},
+
+	/**
+	 * Connect control component to the module.
+	 * This is called after constructor and setting of the model and view components.
+	 *
+	 * @abstract
+	 */
+	connect: function() {}
 });
