@@ -93,7 +93,7 @@ function MVCModule(MVCConstructors) {
         throw new Error('Model constructor should be a function');
     }
 
-    if (!MVCConstructors.states && !MVCConstructors.View && !MVCConstructors.Control) {
+    if (!MVCConstructors.states && !MVCConstructors.View) {
         throw new Error('No model states are defined');
     }
     if (!MVCConstructors.states) {
@@ -113,14 +113,9 @@ function MVCModule(MVCConstructors) {
             throw new Error('Incorrect type of state "' + state + '"');
         }
 
-        ['View', 'Control'].forEach(function(component) {
-            if (!MVCConstructors.states[state][component]) {
-                throw new Error(component + ' constructor for state "' + state + '" is not defined');
-            }
-            if (Object.prototype.toString.call(MVCConstructors.states[state][component]) != '[object Function]') {
-                throw new Error(component + ' constructor for state "' + state + '" should be a function');
-            }
-        });
+		if (Object.prototype.toString.call(MVCConstructors.states[state]['View']) != '[object Function]') {
+			throw new Error('View constructor for state "' + state + '" should be a function');
+		}
     }
 
 
@@ -145,24 +140,12 @@ function MVCModule(MVCConstructors) {
         // Build model states
         this.states = {};
         for (var stateName in MVCConstructors.states) {
-            var state = {
+            this.states[stateName] = {
                 // Build state view
                 view: new MVCConstructors.states[stateName].View(),
                 // Build state control
-                control: new MVCConstructors.states[stateName].Control()
+                control: MVCConstructors.states[stateName].Control ? new MVCConstructors.states[stateName].Control() : null
             };
-
-            // Connect model and control to the view
-            state.view.setModel(this.model);
-            state.view.setControl(state.control);
-            // Connect model and view to the control
-            state.control.setModel(this.model);
-            state.control.setView(state.view);
-
-			state.view.connect();
-			state.control.connect();
-
-            this.states[stateName] = state;
         }
 
         /**
@@ -184,10 +167,41 @@ function MVCModule(MVCConstructors) {
                 throw new Error('Undefined state "' + stateName + '"');
             }
 
+			// This place of populating of references always guaranties the correct references. This is very important for singleton state components.
+			// Connect model and control to the view
+			state.view.setModel(this.model);
+
+			if (state.control) {
+				state.view.setControl(state.control);
+				// Connect model and view to the control
+				state.control.setModel(this.model);
+				state.control.setView(state.view);
+			}
+			state.view.connect();
+
+			if (state.control) {
+				state.control.connect();
+			}
+
             return {
                 model: this.model,
                 view: state.view,
-                control: state.control
+                control: state.control,
+
+				/**
+				 * @param [String | Object] key - Local sub-module state.
+				 * @param [*] subModule - Sub-module state.
+				 */
+				registerSubModuleState: function(key, subModule) {
+					if (typeof key == 'object') {
+						subModule = key;
+						for (key in subModule) {
+							this.registerModule(key, subModule[key]);
+						}
+					}
+
+					this.subModules[key] = subModule;
+				}
             };
         };
 
