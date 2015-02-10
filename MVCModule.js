@@ -116,6 +116,9 @@ function MVCModule(MVCConstructors) {
 		if (Object.prototype.toString.call(MVCConstructors.states[state]['View']) != '[object Function]') {
 			throw new Error('View constructor for state "' + state + '" should be a function');
 		}
+		if (MVCConstructors.states[state]['Control'] && Object.prototype.toString.call(MVCConstructors.states[state]['Control']) != '[object Function]') {
+			throw new Error('Control constructor for state "' + state + '" should be a function');
+		}
     }
 
 
@@ -128,7 +131,6 @@ function MVCModule(MVCConstructors) {
      *
      * @name ModuleConstructor
      * @constructor
-     * @param {Object} [moduleArgs = {}] - Object of input arguments for each sub-module.
      * @param {[*]} [arguments] - Input arguments for Model.
      */
     return function() {
