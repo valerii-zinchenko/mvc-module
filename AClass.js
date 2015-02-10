@@ -62,6 +62,47 @@ function AClass(Constructor) {
         throw new Error('Constructor should be an function');
     }
 
+	/**
+	 * Ecapsulate methods and properties from 'what' object or Class into 'to' Class.
+	 *
+	 * @param {Objcet | Class} what - Object or Class that will be encapsulated.
+	 * @param {Class} to - Class where the methods and properties will be encapsulated.
+	 */
+	function encapsulate(what, to) {
+		if (Object.prototype.toString.call(what) == '[object Function]') {
+			what = what.prototype;
+		}
+
+		for (var key in what) {
+			// Note. 'constructor' is excluded in order to not override the real class constructor.
+			if (what.hasOwnProperty(key) && key != 'constructor') {
+				var value = what[key];
+				switch (Object.prototype.toString.call(value)) {
+					case '[object Function]':
+						to.prototype[key] = value;
+						break;
+
+					case '[object Object]':
+						if (value) {
+							if (key == '_defaults') {
+								// NOTE. This is only for cases when some instance of AClass will be incapsulated.
+								utils.deepCopy(to.prototype._defaults, value);
+							} else {
+								if (!to.prototype._defaults[key]) {
+									to.prototype._defaults[key] = {};
+								}
+								utils.deepCopy(to.prototype._defaults[key], value);
+							}
+							break;
+						}
+
+					default:
+						to.prototype._defaults[key] = value;
+				}
+			}
+		}
+	}
+
     /**
      * Class constructor subroutine.
      *
@@ -70,20 +111,21 @@ function AClass(Constructor) {
      * @name ClassConstructor
      * @constructor
      * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used if this argument will be omitted
-     * @param {Object} props - Defines the properties and methods for a new class
+	 * @param {ClassConstructor | Object} [...rest] - Classes/objects properties and methods of which will be encapsulated
+     * @param {Object} props - The last input argument. Defines the properties and methods for a new class
      * @returns {Function} Instance
      */
     return function(Parent, props){
-        var Class, CoreClass, key, value;
+        var Class, CoreClass;
 
         // Check input arguments
-        if (typeof Parent !== 'function') {
-            props = Parent;
-            Parent = Object;
-        }
+		props = arguments[arguments.length - 1];
         if (props && typeof props !== 'object') {
             throw new Error('Incorrect input arguments. It should be: new Class([[Function], Object])');
         }
+		if (Parent == props) {
+			Parent = Object;
+		}
 
         // Create proxy function
         CoreClass = function(){};
@@ -101,32 +143,26 @@ function AClass(Constructor) {
         if (Class.parent._defaults) {
             utils.deepCopy(Class.prototype._defaults, Class.parent._defaults);
         }
-        // Setup input properties to the new class
-        for (key in props) {
-            if (props.hasOwnProperty(key)) {
-                value = props[key];
-                switch (Object.prototype.toString.call(value)) {
-                    case '[object Function]':
-                        Class.prototype[key] = value;
-                        break;
-                    case '[object Object]':
-                        if (value) {
-                            if (!Class.prototype._defaults[key]) {
-                                Class.prototype._defaults[key] = {};
-                            }
-                            utils.deepCopy(Class.prototype._defaults[key], value);
-                            break;
-                        }
-                    default:
-                        Class.prototype._defaults[key] = value;
-                }
-            }
-        }
+
+		// Prepare an array of being encapsulated classes and objects.
+		var encapsulations = Array.prototype.slice.call(arguments, 1, -1);
+		if (encapsulations) {
+			if (Object.prototype.toString.call(encapsulations) == '[object Array]') {
+				encapsulations.concat(props.Encapsulate);
+			} else {
+				encapsulations.push(props.Encapsulate);
+			}
+
+			delete props.Encapsulate;
+		}
+		encapsulations.push(props);
+
+		// Setup input properties to the new class
+		// Encapsulate methods and properties from other classes/objects
+		for (var n = 0, N = encapsulations.length; n < N; n++) {
+			encapsulate(encapsulations[n], Class);
+		}
 
         return Class;
     }
-}
-
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = AClass;
 }
