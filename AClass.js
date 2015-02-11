@@ -146,8 +146,8 @@ function AClass(Constructor) {
 
 		// Prepare an array of being encapsulated classes and objects.
 		var encapsulations = Array.prototype.slice.call(arguments, 1, -1);
-		if (encapsulations) {
-			if (Object.prototype.toString.call(encapsulations) == '[object Array]') {
+		if (props.Encapsulate) {
+			if (Object.prototype.toString.call(props.Encapsulate) == '[object Array]') {
 				encapsulations.concat(props.Encapsulate);
 			} else {
 				encapsulations.push(props.Encapsulate);
