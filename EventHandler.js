@@ -25,12 +25,18 @@
 
 var EventHandler = new Class({
 	/**
-	 * Holder of registered events.
+	 * Holder of registered events
 	 *
 	 * @type {Object}
 	 */
 	_events: {},
 
+	/**
+	 * Listen specific event and attach event handler.
+	 *
+	 * @param {String | Object} eventName - Event name. If this argument is object then the keys it will be treated as event names and key values as event handlers
+	 * @param {Function} [handler] - Event handler
+	 */
 	listen: function(eventName, handler) {
 		if (Object.prototype.toString.call(eventName) == '[object Object]') {
 			var obj = eventName;
@@ -45,6 +51,12 @@ var EventHandler = new Class({
 		}
 	},
 
+	/**
+	 * Trigger specific event.
+	 *
+	 * @param {String} eventName - Event name that should be triggered
+	 * @param {[*]} [...rest] - Arguments that will be applied to the registered event handlers
+	 */
 	trigger: function(eventName) {
 		var events = this._events[eventName];
 		if (!events || events.length == 0) {
@@ -53,10 +65,16 @@ var EventHandler = new Class({
 
 		var args = Array.prototype.slice.call(arguments, 1);
 		for (var n = 0, N = events.length; n < N; n++) {
-			events[n].apply(null, args);
+			events[n].apply(this, [this].concat(args));
 		}
 	},
 
+	/**
+	 * Remove registered event handlers.
+	 *
+	 * @param {String} eventName - Event name from where the event handler will be removed
+	 * @param {Function} handlerRef - Original reference to the registered event handler
+	 */
 	removeListener: function(eventName, handlerRef) {
 		var events = this._events[eventName];
 		if (!events || events.length == 0) {
