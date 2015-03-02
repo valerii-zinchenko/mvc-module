@@ -173,7 +173,7 @@ var AView = new Class({
      * @abstract
      */
     update: function() {},
-	
+
 	/**
 	 * Update sub-modules.
 	 *
