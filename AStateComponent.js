@@ -1,6 +1,6 @@
 /*
  TaskOnFly allows you easy manage your tasks and task lists on the fly from your mobile or desktop device.
- Copyright (C) 2014  Valerii Zinchenko
+ Copyright (C) 2014-2015  Valerii Zinchenko
 
  This file is part of TaskOnFly.
 
@@ -22,9 +22,11 @@
 */
 
 /**
- * @file It contains the implementation of [Abstract Control class]{@link AControl} creator.
+ * @file It contains the implementation of [abstract state component]{@link AStateComponent} creator.
  *
- * @see {@link Class}
+ * @see {@link AState}
+ * @see {@link AView}
+ * @see {@link AControl}
  * @see {@link MVCModule}
  *
  * @author Valerii Zinchenko
@@ -35,33 +37,48 @@
 'use strict';
 
 /**
- * Abstract Control.
- * It defines all required conpoments and methods for better and faster developing of specific control.
+ * Abstract state component.
+ * This class defines general properties and methods which will be used in each state component, like AView and AControl.
  *
  * @type {Class}
  *
  * @constructor
  */
-var AControl = new Class(AStateComponent, {
-    /**
-     * Reference to the view.
-     */
-    view: null,
-
-    /**
-     * Control destructor.
-     */
-    destruct: function() {
-        this.view = null;
-		AStateComponent.prototype.desctuct.call(this);
-    },
+var AStateComponent = new Class({
+	/**
+	 * Reference to the model.
+	 *
+	 * @type {Class}
+	 */
+	model: null,
 
 	/**
-	 * Set view
-	 *
-	 * @param {Object} view - View
+	 * Constructor.
 	 */
-	setView: function(view) {
-		this.view = view;
-	}
+	construct: function() {},
+	initialize: function() {},
+
+	/**
+	 * Destructor.
+	 */
+	destruct: function() {
+		this.model = null;
+	},
+
+	/**
+	 * Set model.
+	 *
+	 * @param {Object} model - Model
+	 */
+	setModel: function(model) {
+		this.model = model;
+	},
+
+	/**
+	 * Connect view component to the module.
+	 * This is called after constructor and setting of the model and control components.
+	 *
+	 * @abstract
+	 */
+	connect: function() {}
 });

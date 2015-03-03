@@ -43,12 +43,7 @@
  *
  * @constructor
  */
-var AView = new Class({
-    /**
-     * Reference to the model.
-     */
-    model: null,
-
+var AView = new Class(AStateComponent, {
     /**
      * Reference to the control.
      */
@@ -75,27 +70,12 @@ var AView = new Class({
 	_isRendered: false,
 
     /**
-     * View constructor.
-     */
-    construct: function() {},
-
-    /**
      * View destructor.
      */
     destruct: function() {
-        this.model = null;
-        this.view = null;
+        this.control = null;
+		AStateComponent.prototype.desctuct.call(this);
     },
-
-	/**
-	 * Set model
-	 *
-	 * @param {Object} model - Model
-	 */
-	setModel: function(model) {
-		this.model = model;
-	},
-
 	/**
 	 * Set control
 	 *
@@ -108,14 +88,6 @@ var AView = new Class({
 
 		this.control = control;
 	},
-
-	/**
-	 * Connect view component to the module.
-	 * This is called after constructor and setting of the model and control components.
-	 *
-	 * @abstract
-	 */
-	connect: function() {},
 
 	/**
 	 * Process view template and set the proceiing result to the [main view element]{@link $el}.
