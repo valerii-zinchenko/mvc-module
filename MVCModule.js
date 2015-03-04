@@ -141,13 +141,10 @@ function MVCModule(MVCConstructors) {
 
         // Build model states
         this.states = {};
+		var state;
         for (var stateName in MVCConstructors.states) {
-            this.states[stateName] = {
-                // Build state view
-                view: new MVCConstructors.states[stateName].View(),
-                // Build state control
-                control: MVCConstructors.states[stateName].Control ? new MVCConstructors.states[stateName].Control() : null
-            };
+			state = MVCConstructors.states[stateName];
+            this.states[stateName] = new AState(this.model, new state.View(), state.Control ? new state.Control() : null);
         }
 
         /**
@@ -155,6 +152,7 @@ function MVCModule(MVCConstructors) {
          * this.view and this.control will point to the View and Control of specific model state.
          *
          * @param {string} stateName - State name.
+		 * @return {State}
          */
         this.useState = function(stateName) {
             if (arguments.length != 1) {
@@ -169,42 +167,9 @@ function MVCModule(MVCConstructors) {
                 throw new Error('Undefined state "' + stateName + '"');
             }
 
-			// This place of populating of references always guaranties the correct references. This is very important for singleton state components.
-			// Connect model and control to the view
-			state.view.setModel(this.model);
+			state.connect();
 
-			if (state.control) {
-				state.view.setControl(state.control);
-				// Connect model and view to the control
-				state.control.setModel(this.model);
-				state.control.setView(state.view);
-			}
-			state.view.connect();
-
-			if (state.control) {
-				state.control.connect();
-			}
-
-            return {
-                model: this.model,
-                view: state.view,
-                control: state.control,
-
-				/**
-				 * @param [String | Object] key - Local sub-module state.
-				 * @param [*] subModule - Sub-module state.
-				 */
-				registerSubModuleState: function(key, subModule) {
-					if (typeof key == 'object') {
-						subModule = key;
-						for (key in subModule) {
-							this.registerModule(key, subModule[key]);
-						}
-					}
-
-					this.subModules[key] = subModule;
-				}
-            };
+            return state;
         };
 
         if (this.states._default) {
