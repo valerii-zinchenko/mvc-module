@@ -24,6 +24,7 @@
 /**
  * @file It contains the implementation of [Abstract View class]{@link AView} creator.
  *
+ * @see {@link AStateComponent}
  * @see {@link Class}
  * @see {@link MVCModule}
  *
@@ -44,24 +45,24 @@
  * @constructor
  */
 var AView = new Class(AStateComponent, {
-    /**
-     * Reference to the control.
-     */
-    control: null,
+	/**
+	 * Reference to the control.
+	 */
+	control: null,
 
-    /**
-     * Main view element.
-     *
-     * @type {DOMElement}
-     */
-    $el: null,
+	/**
+	 * Main view element.
+	 *
+	 * @type {DOMElement}
+	 */
+	$el: null,
 
-    /**
-     * Main template.
-     *
-     * @type {string}
-     */
-    template: '',
+	/**
+	 * Main template.
+	 *
+	 * @type {string}
+	 */
+	template: '',
 
 	/**
 	 * Flag that indicates if the view is fully rendered.
@@ -69,13 +70,13 @@ var AView = new Class(AStateComponent, {
 	 */
 	_isRendered: false,
 
-    /**
-     * View destructor.
-     */
-    destruct: function() {
-        this.control = null;
+	/**
+	 * View destructor.
+	 */
+	destruct: function() {
+		this.control = null;
 		AStateComponent.prototype.desctuct.call(this);
-    },
+	},
 	/**
 	 * Set control
 	 *
@@ -94,7 +95,7 @@ var AView = new Class(AStateComponent, {
 	 * The Model will be set to the template processor.
 	 */
 	processTemplate: function() {
-        this.$el = $(_.template(this.template, this.model));
+		this.$el = $(_.template(this.template, this.model));
 	},
 
 	/**
@@ -104,33 +105,33 @@ var AView = new Class(AStateComponent, {
 	 */
 	_postProcessTemplate: function() {},
 
-    /**
-     * Render the view.
-     * This creates the new DOM Element from template and connected Model.
+	/**
+	 * Render the view.
+	 * This creates the new DOM Element from template and connected Model.
 	 * It process the view template and [render sub-modules]{@link renderSubModules}.
-     *
-     * @throws {Error} Model is not connected
-     *
-     * @returns {DOMElement}
-     *
-     * @see {@link update}
-     */
-    render: function() {
+	 *
+	 * @throws {Error} Model is not connected
+	 *
+	 * @returns {DOMElement}
+	 *
+	 * @see {@link update}
+	 */
+	render: function() {
 		if (this._isRendered) {
 			return this.$el;
 		}
 
-        if (!this.model) {
-            throw new Error('Model is not connected');
-        }
+		if (!this.model) {
+			throw new Error('Model is not connected');
+		}
 
 		this.processTemplate();
 		this._postProcessTemplate();
 
 		this.renderSubModules();
 
-        return this.$el;
-    },
+		return this.$el;
+	},
 
 	/**
 	 * Render sub-modules.
@@ -139,12 +140,12 @@ var AView = new Class(AStateComponent, {
 	 */
 	renderSubModules: function() {},
 
-    /**
-     * Update view.
-     *
-     * @abstract
-     */
-    update: function() {},
+	/**
+	 * Update view.
+	 *
+	 * @abstract
+	 */
+	update: function() {},
 
 	/**
 	 * Update sub-modules.
@@ -184,7 +185,7 @@ var AView = new Class(AStateComponent, {
 	 *
 	 * @abstract
 	 */
-    _postRender: function() {},
+	_postRender: function() {},
 
 	/**
 	 * Abstract routine for calling of [postRender]{@link postRender} method for each sub-module.
@@ -194,10 +195,10 @@ var AView = new Class(AStateComponent, {
 	 */
 	_postRenderModules: function(){},
 
-    /**
-     * Attach event listeners.
-     *
-     * @abstract
-     */
-    _attachEvents: function() {}
+	/**
+	 * Attach event listeners.
+	 *
+	 * @abstract
+	 */
+	_attachEvents: function() {}
 });

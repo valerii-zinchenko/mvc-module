@@ -73,13 +73,37 @@ var AState = new Class({
 	 */
 	_isConnected: false,
 
-	initialize: function(model, view, control) {
-		this.model = model;
-		this.view = view;
-		this.control = control;
+	initialize: function(ViewConstructor, ControlConstructor) {
+		if (Object.prototype.toString.call(ViewConstructor) != '[object Function]') {
+			throw new Error('View constructor for a state should be a function');
+		}
+		if (ControlConstructor && Object.prototype.toString.call(ControlConstructor) != '[object Function]') {
+			throw new Error('Control constructor for a state should be a function');
+		}
+
+		this.view = new ViewConstructor();
+
+		if (ControlConstructor) {
+			this.control = new ControlConstructor();
+		}
 	},
 
+	/**
+	 * Set model to the state.
+	 *
+	 * @param {Class|Function} model - MVC model.
+	 */
+	setModel: function(model) {
+		this.model = model;
+	},
+
+	/**
+	 * Connect all MVC components in current state of the model.
+	 */
 	connect: function() {
+		if (!this.model) {
+			throw new Error('Model is not set for the state');
+		}
 		if (this._isConnected) {
 			return;
 		}

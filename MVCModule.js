@@ -98,10 +98,7 @@ function MVCModule(MVCConstructors) {
     }
     if (!MVCConstructors.states) {
         MVCConstructors.states = {
-            _default: {
-                View: MVCConstructors.View,
-                Control: MVCConstructors.Control
-            }
+            _default: new AState(MVCConstructors.View, MVCConstructors.Control)
         };
     }
     if (Object.prototype.toString.call(MVCConstructors.states) != '[object Object]') {
@@ -112,13 +109,6 @@ function MVCModule(MVCConstructors) {
         if (Object.prototype.toString.call(MVCConstructors.states[state]) != '[object Object]') {
             throw new Error('Incorrect type of state "' + state + '"');
         }
-
-		if (Object.prototype.toString.call(MVCConstructors.states[state]['View']) != '[object Function]') {
-			throw new Error('View constructor for state "' + state + '" should be a function');
-		}
-		if (MVCConstructors.states[state]['Control'] && Object.prototype.toString.call(MVCConstructors.states[state]['Control']) != '[object Function]') {
-			throw new Error('Control constructor for state "' + state + '" should be a function');
-		}
     }
 
 
@@ -143,8 +133,8 @@ function MVCModule(MVCConstructors) {
         this.states = {};
 		var state;
         for (var stateName in MVCConstructors.states) {
-			state = MVCConstructors.states[stateName];
-            this.states[stateName] = new AState(this.model, new state.View(), state.Control ? new state.Control() : null);
+			this.states[stateName] = MVCConstructors.states[stateName];
+			this.states[stateName].setModel(this.model);
         }
 
         /**

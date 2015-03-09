@@ -24,6 +24,7 @@
 /**
  * @file It contains the implementation of [Abstract Control class]{@link AControl} creator.
  *
+ * @see {@link AStateComponent}
  * @see {@link Class}
  * @see {@link MVCModule}
  *
@@ -43,18 +44,18 @@
  * @constructor
  */
 var AControl = new Class(AStateComponent, {
-    /**
-     * Reference to the view.
-     */
-    view: null,
+	/**
+	 * Reference to the view.
+	 */
+	view: null,
 
-    /**
-     * Control destructor.
-     */
-    destruct: function() {
-        this.view = null;
+	/**
+	 * Control destructor.
+	 */
+	destruct: function() {
+		this.view = null;
 		AStateComponent.prototype.desctuct.call(this);
-    },
+	},
 
 	/**
 	 * Set view
