@@ -44,80 +44,83 @@
  *
  * @constructor
  */
-var AState = new Class({
-	/**
-	 * Reference to the model.
-	 *
-	 * @type {Class}
-	 */
-	model: null,
-
-	/**
-	 * Reference to the view.
-	 *
-	 * @type {Class}
-	 */
-	view: null,
-
-	/**
-	 * Reference to the control.
-	 *
-	 * @type {Class}
-	 */
-	control: null,
-
-	/**
-	 * This indicates if state component is already connected or not.
-	 *
-	 * @type {Boolean}
-	 */
-	_isConnected: false,
-
-	initialize: function(ViewConstructor, ControlConstructor) {
-		if (Object.prototype.toString.call(ViewConstructor) != '[object Function]') {
-			throw new Error('View constructor for a state should be a function');
-		}
-		if (ControlConstructor && Object.prototype.toString.call(ControlConstructor) != '[object Function]') {
-			throw new Error('Control constructor for a state should be a function');
-		}
-
-		this.view = new ViewConstructor();
-
-		if (ControlConstructor) {
-			this.control = new ControlConstructor();
-		}
-	},
-
-	/**
-	 * Set model to the state.
-	 *
-	 * @param {Class|Function} model - MVC model.
-	 */
-	setModel: function(model) {
-		this.model = model;
-	},
-
-	/**
-	 * Connect all MVC components in current state of the model.
-	 */
-	connect: function() {
-		if (!this.model) {
-			throw new Error('Model is not set for the state');
-		}
-		if (this._isConnected) {
-			return;
-		}
-
-		this.view.setModel(this.model);
-		if (this.control) {
-			this.control.setModel(this.model);
-			this.control.setView(this.view);
-			this.control.connect();
-
-			this.view.setControl(this.control);
-		}
-		this.view.connect();
-
-		this._isConnected = true;
+function AState(ViewConstructor, ControlConstructor) {
+	if (Object.prototype.toString.call(ViewConstructor) != '[object Function]') {
+		throw new Error('View constructor for a state should be a function');
 	}
-});
+
+	if (ControlConstructor && Object.prototype.toString.call(ControlConstructor) != '[object Function]') {
+		throw new Error('Control constructor for a state should be a function');
+	}
+
+	return new Class({
+		/**
+		 * Reference to the model.
+		 *
+		 * @type {Class}
+		 */
+		model: null,
+
+		/**
+		 * Reference to the view.
+		 *
+		 * @type {Class}
+		 */
+		view: null,
+
+		/**
+		 * Reference to the control.
+		 *
+		 * @type {Class}
+		 */
+		control: null,
+
+		/**
+		 * This indicates if state component is already connected or not.
+		 *
+		 * @type {Boolean}
+		 */
+		_isConnected: false,
+
+		initialize: function() {
+			this.view = new ViewConstructor();
+
+			if (ControlConstructor) {
+				this.control = new ControlConstructor();
+			}
+		},
+
+		/**
+		 * Set model to the state.
+		 *
+		 * @param {Class|Function} model - MVC model.
+		 */
+		setModel: function(model) {
+			this.model = model;
+		},
+
+		/**
+		 * Connect all MVC components in current state of the model.
+		 */
+		connect: function() {
+			if (!this.model) {
+				throw new Error('Model is not set for the state');
+			}
+			if (this._isConnected) {
+				return;
+			}
+
+			this.view.setModel(this.model);
+			if (this.control) {
+				this.control.setModel(this.model);
+				this.control.setView(this.view);
+				this.control.connect();
+
+				this.view.setControl(this.control);
+			}
+			this.view.connect();
+
+			this._isConnected = true;
+		}
+	});
+}

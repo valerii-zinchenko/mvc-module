@@ -106,7 +106,7 @@ function MVCModule(MVCConstructors) {
     }
 
     for (var state in MVCConstructors.states) {
-        if (Object.prototype.toString.call(MVCConstructors.states[state]) != '[object Object]') {
+        if (Object.prototype.toString.call(MVCConstructors.states[state]) != '[object Function]') {
             throw new Error('Incorrect type of state "' + state + '"');
         }
     }
@@ -133,7 +133,7 @@ function MVCModule(MVCConstructors) {
         this.states = {};
 		var state;
         for (var stateName in MVCConstructors.states) {
-			this.states[stateName] = MVCConstructors.states[stateName];
+			this.states[stateName] = new MVCConstructors.states[stateName]();
 			this.states[stateName].setModel(this.model);
         }
 
