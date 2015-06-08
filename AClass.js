@@ -83,18 +83,16 @@ function AClass(Constructor) {
 						break;
 
 					case '[object Object]':
-						if (value) {
-							if (key == '_defaults') {
-								// NOTE. This is only for cases when some instance of AClass will be incapsulated.
-								utils.deepCopy(to.prototype._defaults, value);
-							} else {
-								if (!to.prototype._defaults[key]) {
-									to.prototype._defaults[key] = {};
-								}
-								utils.deepCopy(to.prototype._defaults[key], value);
+						if (key == '_defaults') {
+							// NOTE. This is only for cases when some instance of AClass will be encapsulated.
+							utils.deepCopy(to.prototype._defaults, value);
+						} else {
+							if (!to.prototype._defaults[key]) {
+								to.prototype._defaults[key] = {};
 							}
-							break;
+							utils.deepCopy(to.prototype._defaults[key], value);
 						}
+						break;
 
 					default:
 						to.prototype._defaults[key] = value;
@@ -114,14 +112,16 @@ function AClass(Constructor) {
 	 * @param {ClassConstructor | Object} [...rest] - Classes/objects properties and methods of which will be encapsulated
      * @param {Object} props - The last input argument. Defines the properties and methods for a new class
      * @returns {Function} Instance
+	 *
+	 * @throws {Error} Incorrect input arguments. It should be: new Class([Function], [Function | Object]*, Object)
      */
     return function(Parent, props){
         var Class, CoreClass;
 
-        // Check input arguments
+        // Last input argument is an object of Class properties
 		props = arguments[arguments.length - 1];
-        if (props && typeof props !== 'object') {
-            throw new Error('Incorrect input arguments. It should be: new Class([[Function], Object])');
+        if (!props || props && (typeof props !== 'object')) {
+            throw new Error('Incorrect input arguments. It should be: new Class([Function], [Function | Object]*, Object)');
         }
 		if (Parent == props) {
 			Parent = Object;
@@ -148,7 +148,7 @@ function AClass(Constructor) {
 		var encapsulations = Array.prototype.slice.call(arguments, 1, -1);
 		if (props.Encapsulate) {
 			if (Object.prototype.toString.call(props.Encapsulate) == '[object Array]') {
-				encapsulations.concat(props.Encapsulate);
+				encapsulations = encapsulations.concat(props.Encapsulate);
 			} else {
 				encapsulations.push(props.Encapsulate);
 			}

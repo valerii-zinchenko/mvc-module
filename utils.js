@@ -90,9 +90,7 @@ var utils = {
 
             switch (Object.prototype.toString.call(value)) {
                 case '[object Object]':
-                    if (!target[key]) {
-                        target[key] = {};
-                    }
+					target[key] = {};
                     utils.deepExtend(target[key], value);
                     break;
                 case '[object Array]':

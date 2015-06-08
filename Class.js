@@ -43,19 +43,17 @@
 function ClassConstructor() {
     utils.deepExtend(this, this.constructor.prototype._defaults);
 
-    if (this.constructor.parent) {
-        // Recursively call all parent's constructors, started from the top parent class
-        (function constructParentStack(context, child, args) {
-            var parent = child.constructor.parent;
-            if (parent) {
-                constructParentStack(context, parent, args);
-            }
+	// Recursively call all parent's constructors, started from the top parent class
+	(function constructParentStack(context, child, args) {
+		var parent = child.constructor.parent;
+		if (parent) {
+			constructParentStack(context, parent, args);
+		}
 
-            if (child.hasOwnProperty('initialize')) {
-                child.initialize.apply(context, args);
-            }
-        })(this, this.constructor.parent, arguments);
-    }
+		if (child.hasOwnProperty('initialize')) {
+			child.initialize.apply(context, args);
+		}
+	})(this, this.constructor.parent, arguments);
 
     if (this.constructor.prototype.hasOwnProperty('initialize')) {
         this.constructor.prototype.initialize.apply(this, arguments);
