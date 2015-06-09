@@ -55,7 +55,6 @@ var AStateComponent = new Class({
 	/**
 	 * Constructor.
 	 */
-	construct: function() {},
 	initialize: function() {},
 
 	/**

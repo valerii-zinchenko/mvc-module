@@ -75,12 +75,14 @@ var AView = new Class(AStateComponent, {
 	 */
 	destruct: function() {
 		this.control = null;
-		AStateComponent.prototype.desctuct.call(this);
+		AStateComponent.prototype.destruct.call(this);
 	},
 	/**
 	 * Set control
 	 *
 	 * @param {Object} control - Control
+	 *
+	 * @throws {Error} Incorrect type of control component
 	 */
 	setControl: function(control) {
 		if (!(control instanceof AControl)) {

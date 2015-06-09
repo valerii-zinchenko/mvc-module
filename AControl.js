@@ -54,15 +54,21 @@ var AControl = new Class(AStateComponent, {
 	 */
 	destruct: function() {
 		this.view = null;
-		AStateComponent.prototype.desctuct.call(this);
+		AStateComponent.prototype.destruct.call(this);
 	},
 
 	/**
 	 * Set view
 	 *
 	 * @param {Object} view - View
+	 *
+	 * @throws {Error} Incorrect type of view component
 	 */
 	setView: function(view) {
+		if (!(view instanceof AView)) {
+			throw new Error('Incorrect type of view component');
+		}
+
 		this.view = view;
 	}
 });
