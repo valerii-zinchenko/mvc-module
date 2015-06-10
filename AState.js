@@ -37,22 +37,34 @@
 'use strict';
 
 /**
- * Abstract state.
- * It build specified State depending on input state component.
+ * Abstract state factory.
+ * It builds specified state depending on input state component.
  *
- * @type {Class}
+ * @param {AStateComponent} ViewConstructor - Constructor for the view component.
+ * @param {AStateComponent} [ControlConstructor] - Constructor for the control component.
  *
- * @constructor
+ * @throws {Error} Incorrect input arguments. Expected AStateComponent ViewConstructor, [AStateComponent ControlConstructor]
+ * @throws {Error} View constructor should be inherited from AStateComponent
+ * @throws {Error} Control constructor should be inherited from AStateComponent
  */
 function AState(ViewConstructor, ControlConstructor) {
-	if (Object.prototype.toString.call(ViewConstructor) != '[object Function]') {
-		throw new Error('View constructor for a state should be a function');
+	if (!ViewConstructor) {
+		throw new Error('Incorrect input arguments. Expected AStateComponent ViewConstructor, [AStateComponent ControlConstructor]');
+	}
+	if (!(ViewConstructor.prototype instanceof AStateComponent)) {
+		throw new Error('View constructor should be inherited from AStateComponent');
+	}
+	if (ControlConstructor && !(ControlConstructor.prototype instanceof AStateComponent)) {
+		throw new Error('Control constructor should be inherited from AStateComponent');
 	}
 
-	if (ControlConstructor && Object.prototype.toString.call(ControlConstructor) != '[object Function]') {
-		throw new Error('Control constructor for a state should be a function');
-	}
-
+	/**
+	 * Abstract state.
+	 *
+	 * @type {Class}
+	 *
+	 * @constructor
+	 */
 	return new Class({
 		/**
 		 * Reference to the model.
@@ -97,10 +109,18 @@ function AState(ViewConstructor, ControlConstructor) {
 		 */
 		setModel: function(model) {
 			this.model = model;
+
+			this.view.setModel(this.model);
+
+			if (this.control) {
+				this.control.setModel(this.model);
+			}
 		},
 
 		/**
 		 * Connect all MVC components in current state of the model.
+		 *
+		 * @throws {Error} Model is not set for the state
 		 */
 		connect: function() {
 			if (!this.model) {
@@ -110,13 +130,11 @@ function AState(ViewConstructor, ControlConstructor) {
 				return;
 			}
 
-			this.view.setModel(this.model);
 			if (this.control) {
-				this.control.setModel(this.model);
-				this.control.setView(this.view);
-				this.control.connect();
-
 				this.view.setControl(this.control);
+				this.control.setView(this.view);
+
+				this.control.connect();
 			}
 			this.view.connect();
 
