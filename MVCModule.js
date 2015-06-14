@@ -34,17 +34,6 @@
 'use strict';
 
 /**
- * State.
- *
- * @note This is for documentation only.
- *
- * @name State
- * @type {Object}
- * @property {Function} View - View constructor
- * @property {Function} Control - Control constructor
- */
-
-/**
  * States.
  * Array-like object of model states.
  *
@@ -52,7 +41,7 @@
  *
  * @name States
  * @type {Object}
- * @property {State} stateName - Object of constructors for state with name "stateName"
+ * @property {AState} stateName - Object of constructors for state with name "stateName"
  */
 
 /**
@@ -73,10 +62,7 @@
  * @throws {Error} Model constructor should be a function
  * @throws {Error} No model states are defined
  * @throws {Error} Incorrect type for defined model states
- * @throws {Error} Incorrect type of state "{state}"
- * @throws {Error} View constructor for state "{state}" is not defined
- * @throws {Error} Control constructor for state "{state}" is not defined
- * @throws {Error} construct property should be a function
+ * @throws {Error} Incorrect type of state "{state}", Function expected
  */
 function MVCModule(MVCConstructors) {
     if (arguments.length != 1) {
@@ -107,7 +93,7 @@ function MVCModule(MVCConstructors) {
 
     for (var state in MVCConstructors.states) {
         if (Object.prototype.toString.call(MVCConstructors.states[state]) != '[object Function]') {
-            throw new Error('Incorrect type of state "' + state + '"');
+            throw new Error('Incorrect type of state "' + state + '", Function expected');
         }
     }
 
@@ -119,11 +105,10 @@ function MVCModule(MVCConstructors) {
      *
      * @note This is just for documentation.
      *
-     * @name ModuleConstructor
      * @constructor
      * @param {[*]} [arguments] - Input arguments for Model.
      */
-    return function() {
+    var ModuleConstructor = function() {
         var args = Array.prototype.slice.call(arguments);
 
         // Build model
@@ -137,33 +122,35 @@ function MVCModule(MVCConstructors) {
 			this.states[stateName].setModel(this.model);
         }
 
-        /**
-         * Specify which state will be used.
-         * this.view and this.control will point to the View and Control of specific model state.
-         *
-         * @param {string} stateName - State name.
-		 * @return {State}
-         */
-        this.useState = function(stateName) {
-            if (arguments.length != 1) {
-                throw new Error('Incorrect amount of input arguments');
-            }
-            if (typeof stateName != 'string') {
-                throw new Error('Incorrect type of input argument');
-            }
-
-            var state = this.states[stateName];
-            if (!state) {
-                throw new Error('Undefined state "' + stateName + '"');
-            }
-
-			state.connect();
-
-            return state;
-        };
-
         if (this.states._default) {
             return this.useState('_default');
         }
     }
+
+	/**
+	 * Specify which state will be used.
+	 * this.view and this.control will point to the View and Control of specific model state.
+	 *
+	 * @param {string} stateName - State name.
+	 * @return {AState}
+	 */
+	ModuleConstructor.prototype.useState = function(stateName) {
+		if (arguments.length != 1) {
+			throw new Error('Incorrect amount of input arguments');
+		}
+		if (typeof stateName != 'string') {
+			throw new Error('Incorrect type of input argument');
+		}
+
+		var state = this.states[stateName];
+		if (!state) {
+			throw new Error('Undefined state "' + stateName + '"');
+		}
+
+		state.connect();
+
+		return state;
+	};
+
+	return ModuleConstructor;
 }
