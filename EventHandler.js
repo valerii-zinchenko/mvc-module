@@ -83,7 +83,7 @@ var EventHandler = new Class({
 
 		for (var n = 0, N = events.length; n < N; n++) {
 			if (events[n] === handlerRef) {
-				events.splice(n,n);
+				events.splice(n,1);
 				break;
 			}
 		}
