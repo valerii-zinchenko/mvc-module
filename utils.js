@@ -124,5 +124,67 @@ var utils = {
         dateObj.setTime(dateObj.getTime() - dateObj.getTimezoneOffset()*60000); // Convert minutes in milliseconds: 60000 = 60*10000
 
         return dateObj.toISOString().slice(0,10);
-    }
+    },
+
+	/**
+	 * Check if input argument is Object.
+	 *
+	 * @param {*} data - Argument that will be checked.
+	 * @return {boolean}
+	 */
+	isObject: function(data) {
+		return Object.prototype.toString.call(data) == '[object Object]';
+	},
+
+	/**
+	 * Check if input argument is Array.
+	 *
+	 * @param {*} data - Argument that will be checked.
+	 * @return {boolean}
+	 */
+	isArray: function(data) {
+		return Object.prototype.toString.call(data) == '[object Array]';
+	},
+
+	/**
+	 * Check if input argument is String.
+	 *
+	 * @param {*} data - Argument that will be checked.
+	 * @return {boolean}
+	 */
+	isString: function(data) {
+		return Object.prototype.toString.call(data) == '[object String]';
+	},
+
+	/**
+	 * Check if object is empty, i.e. doesn't have any property and methods.
+	 *
+	 * @param {Object} object - Object that will be checked.
+	 * @return {boolean}
+	 */
+	isObjectEmpty: function(object) {
+		return Object.keys(object).length === 0;
+	},
+
+	/**
+	 * Compare two version.
+	 *
+	 * @param {String} v1 - Version relative what the decition will be accepted.
+	 * @param {String} v2 - Version which will be compared.
+	 * @return {Number} -1: if v1 is lower than v2; 0: if v1 is the same as v2; 1: if v1 is greater than v2
+	 */
+	compareVersions: function(v1, v2) {
+		v1 = v1.split('.').map(function(str) {return parseInt(str, 10);});
+		v2 = v2.split('.').map(function(str) {return parseInt(str, 10);});
+
+		for (var n = 0, N = v1.length; n < N; n++) {
+			if (v1[n] > v2[n]) {
+				return 1;
+			} else if (v1[n] < v2[n]) {
+				return -1;
+			}
+		}
+
+		return 0;
+	}
 };
