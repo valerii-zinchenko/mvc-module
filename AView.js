@@ -25,12 +25,14 @@
  * @file It contains the implementation of [Abstract View class]{@link AView} creator.
  *
  * @see {@link AStateComponent}
+ * @see {@link StaticView}
+ * @see {@link DynamicView}
  * @see {@link Class}
  * @see {@link MVCModule}
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 'use strict';
@@ -58,25 +60,14 @@ var AView = new Class(AStateComponent, {
 	$el: null,
 
 	/**
-	 * Main template.
-	 *
-	 * @type {string}
-	 */
-	template: '',
-
-	/**
-	 * Flag that indicates if the view is fully rendered.
-	 * It is used in [render()]{@link render} and [postRender()]{@link postRender}
-	 */
-	_isRendered: false,
-
-	/**
 	 * View destructor.
 	 */
 	destruct: function() {
+		this.$el.remove();
 		this.control = null;
 		AStateComponent.prototype.destruct.call(this);
 	},
+
 	/**
 	 * Set control
 	 *
@@ -93,54 +84,15 @@ var AView = new Class(AStateComponent, {
 	},
 
 	/**
-	 * Process view template and set the proceiing result to the [main view element]{@link $el}.
-	 * The Model will be set to the template processor.
-	 */
-	processTemplate: function() {
-		this.$el = $(_.template(this.template, this.model));
-	},
-
-	/**
-	 * Post template processing routine.
+	 * Render the view.
+	 *
+	 * @returns {jQueryDOMElement}
 	 *
 	 * @abstract
-	 */
-	_postProcessTemplate: function() {},
-
-	/**
-	 * Render the view.
-	 * This creates the new DOM Element from template and connected Model.
-	 * It process the view template and [render sub-modules]{@link renderSubModules}.
-	 *
-	 * @throws {Error} Model is not connected
-	 *
-	 * @returns {DOMElement}
 	 *
 	 * @see {@link update}
 	 */
-	render: function() {
-		if (this._isRendered) {
-			return this.$el;
-		}
-
-		if (!this.model) {
-			throw new Error('Model is not connected');
-		}
-
-		this.processTemplate();
-		this._postProcessTemplate();
-
-		this.renderSubModules();
-
-		return this.$el;
-	},
-
-	/**
-	 * Render sub-modules.
-	 *
-	 * @abstract
-	 */
-	renderSubModules: function() {},
+	render: function() {},
 
 	/**
 	 * Update view.
@@ -150,52 +102,27 @@ var AView = new Class(AStateComponent, {
 	update: function() {},
 
 	/**
-	 * Update sub-modules.
-	 *
-	 * @abstract
+	 * Show view.
+	 * Remove "hidden" class.
 	 */
-	updateSubModules: function() {},
-
-	/**
-	 * Main post rendering routine.
-	 * It defines the call order of abstract methods:
-	 * 	1: [_postRendering method]{@link _postRender}
-	 * 	2: [_attachEvents]{@link _attachEvents}
-	 * 	3: [_postRenderModules]{@link _postRenderModules}
-	 *
-	 * It also sets the property [_isRendered]{@link _isRendered} to false.
-	 *
-	 * Do not overwrite it, implement better [abstract _postRender method]{@link _postRender}.
-	 */
-	postRender: function() {
-		if (this._isRendered) {
-			return;
-		}
-
-		this._postRender();
-
-		this._attachEvents();
-
-		this._isRendered = true;
-
-		this._postRenderModules();
+	show: function() {
+		this.$el.removeClass('hidden');
 	},
 
 	/**
-	 * Abstract post rendering routine.
-	 * Mainly this method is called from [postRender]{@link postRender}
-	 *
-	 * @abstract
+	 * Hide view.
+	 * Add "hidden" class.
 	 */
-	_postRender: function() {},
+	hide: function() {
+		this.$el.addClass('hidden');
+	},
 
 	/**
-	 * Abstract routine for calling of [postRender]{@link postRender} method for each sub-module.
-	 * Mainly this method is called from [postRender]{@link postRender}
+	 * Initialize required for view elements.
 	 *
 	 * @abstract
 	 */
-	_postRenderModules: function(){},
+	_initElements: function() {},
 
 	/**
 	 * Attach event listeners.
