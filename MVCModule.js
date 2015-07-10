@@ -28,7 +28,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 2.0.0
+ * @version 2.1.0
  */
 
 'use strict';
@@ -118,8 +118,11 @@ function MVCModule(MVCConstructors) {
         this.states = {};
 		var state;
         for (var stateName in MVCConstructors.states) {
-			this.states[stateName] = new MVCConstructors.states[stateName]();
-			this.states[stateName].setModel(this.model);
+			state = new MVCConstructors.states[stateName]();
+			state.setModel(this.model);
+			state.connect();
+			state.view.render();
+			this.states[stateName] = state;
         }
 
         if (this.states._default) {
@@ -146,8 +149,6 @@ function MVCModule(MVCConstructors) {
 		if (!state) {
 			throw new Error('Undefined state "' + stateName + '"');
 		}
-
-		state.connect();
 
 		return state;
 	};
