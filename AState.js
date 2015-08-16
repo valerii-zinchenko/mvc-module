@@ -91,41 +91,33 @@ function AState(ViewConstructor, ControlConstructor) {
 		 * This indicates if state component is already connected or not.
 		 *
 		 * @type {Boolean}
+		 *
+		 * @throws {Error} Model is undefined
 		 */
 		_isConnected: false,
 
-		initialize: function() {
+		initialize: function(model) {
+			if (!model) {
+				throw new Error('Model is undefined');
+			}
+			this.model = model;
+
 			this.view = new ViewConstructor();
+			this.view.setModel(this.model);
 
 			if (ControlConstructor) {
 				this.control = new ControlConstructor();
-			}
-		},
-
-		/**
-		 * Set model to the state.
-		 *
-		 * @param {Class|Function} model - MVC model.
-		 */
-		setModel: function(model) {
-			this.model = model;
-
-			this.view.setModel(this.model);
-
-			if (this.control) {
 				this.control.setModel(this.model);
 			}
+
+			this.connect();
+			this.view.render();
 		},
 
 		/**
 		 * Connect all MVC components in current state of the model.
-		 *
-		 * @throws {Error} Model is not set for the state
 		 */
 		connect: function() {
-			if (!this.model) {
-				throw new Error('Model is not set for the state');
-			}
 			if (this._isConnected) {
 				return;
 			}

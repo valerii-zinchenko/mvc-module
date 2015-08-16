@@ -118,11 +118,7 @@ function MVCModule(MVCConstructors) {
         this.states = {};
 		var state;
         for (var stateName in MVCConstructors.states) {
-			state = new MVCConstructors.states[stateName]();
-			state.setModel(this.model);
-			state.connect();
-			state.view.render();
-			this.states[stateName] = state;
+			this.states[stateName] = new MVCConstructors.states[stateName](this.model);
         }
 
         if (this.states._default) {
