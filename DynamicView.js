@@ -76,6 +76,6 @@ var DynamicView = new Class(AView, {
 	 * The Model will be set to the template processor.
 	 */
 	_processTemplate: function() {
-		this.$el = $(_.template(this.template, this.model));
+		this.$el = $(_.template(this.template)(this.model));
 	}
 });
