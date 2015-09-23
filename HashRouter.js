@@ -59,11 +59,11 @@ var HashRouter = new SingletonClass(/** @lends HashRouter# */{
 	hashRegExp: /(?:(\#.*)(?=\?))|(\#.*)/,
 
 	/**
-	 * RegExp to match the query from the URL.
+	 * RegExp to match the hard (URL search query) and soft (query after fragment) query from the URL.
 	 *
 	 * @type {RegExp}
 	 */
-	queryRegExp: /(?:(\?.*)(?=\#))|(\?.*)/,
+	queryRegExp: /(\?.*)(?=\#)(?:\#.*(\?.*))?|(\?.*)+?/,
 
 	/**
 	 * Map of converted routes in RegExp and array of method names.
@@ -289,8 +289,19 @@ var HashRouter = new SingletonClass(/** @lends HashRouter# */{
 	 * @return {String|undefined}
 	 */
 	_getQuery: function(url) {
+		var result;
 		var match = this.queryRegExp.exec(url) || [];
 
-		return match[1] || match[2];
+		if (match[1]) {
+			result = match[1];
+
+			if (match[2]) {
+				result += '&' + (match[2]).slice(1);
+			}
+		} else if (match[3]) {
+			result = match[3];
+		}
+
+		return result;
 	}
 });
