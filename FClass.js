@@ -22,7 +22,7 @@
 */
 
 /**
- * @file It contains the implementation of [AClass]{@link AClass}
+ * @file It contains the implementation of [FClass]{@link FClass}
  *
  * @see {@link Class}
  * @see {@link SingletonClass}
@@ -38,7 +38,7 @@
  * Main abstract class creator.
  * It takes the function that will be used as class constructor and wraps it,
  * in order to automate constructor creation. Based on this abstract class creator it is possible to create
- * usual well known Class as in low level programming language like C, C++, Java etc., or easy to implement
+ * usual well known Class as in low level programming language like C++, Java etc., or easy to implement
  * Singleton pattern.
  *
  * The new created class constructor will have the reference to the parent class (in 'parent' property),
@@ -54,7 +54,7 @@
  * @see {@link Class}
  * @see {@link SingletonClass}
  */
-function AClass(Constructor) {
+function FClass(Constructor) {
     if (arguments.length != 1) {
         throw new Error('Incorrect input arguments. Constructor function is not defined');
     }
@@ -84,7 +84,7 @@ function AClass(Constructor) {
 
 					case '[object Object]':
 						if (key == '_defaults') {
-							// NOTE. This is only for cases when some instance of AClass will be encapsulated.
+							// NOTE. This is only for cases when some instance of FClass will be encapsulated.
 							utils.deepCopy(to.prototype._defaults, value);
 						} else {
 							if (!to.prototype._defaults[key]) {

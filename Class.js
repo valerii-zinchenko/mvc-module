@@ -24,7 +24,7 @@
 /**
  * @file It contains the implementation of simple [class]{@link Class} creator.
  *
- * @see {@link AClass}
+ * @see {@link FClass}
  * @see {@link SingletonClass}
  * @see {@link MVCModule}
  *
@@ -65,13 +65,13 @@ function ClassConstructor() {
  * This creator subroutine calls first the parent
  * class constructor method ('initialize') and then the own class constructor method.
  *
- * @type {AClass}
+ * @type {FClass}
  * @constructor
  * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used if this argument will be omitted
  * @param {Object} props - Defines the properties and methods for new class
  * @returns {Function} Instance
  */
-var Class = new AClass(function() {
+var Class = new FClass(function() {
     ClassConstructor.apply(this, arguments);
 });
 

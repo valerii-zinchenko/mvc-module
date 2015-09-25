@@ -24,7 +24,7 @@
 /**
  * @file It contains the implementation of [singleton class]{@link SingletonClass} creator.
  *
- * @see {@link AClass}
+ * @see {@link FClass}
  * @see {@link Class}
  *
  * @author Valerii Zinchenko
@@ -42,13 +42,13 @@
  * then the own class constructor method and store the instance.
  * If the instance is already exist it will be returned.
  *
- * @type {AClass}
+ * @type {FClass}
  * @constructor
  * @param {ClassConstructor} [Parent = Object] - Parent class. Built-in 'Object' will be used if this argument will be omitted
  * @param {Object} props - Defines the properties and methods for new class
  * @returns {Function} Instance
  */
-var SingletonClass = new AClass(function() {
+var SingletonClass = new FClass(function() {
     if (this.constructor.instance) {
         return this.constructor.instance;
     }
