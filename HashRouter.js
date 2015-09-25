@@ -227,7 +227,8 @@ var HashRouter = new SingletonClass(/** @lends HashRouter# */{
 		}
 
 		query = '{"' + query;
-		query = query.replace('?', '');
+		// remove "?"and "?&"at the beginning and "&" at the end
+		query = query.replace(/\?(?!\&)|\?\&|\&$/g, '');
 		query = query.replace(/=/g, '":"');
 		query = query.replace(/&/g, '","');
 		query += '"}';
