@@ -24,7 +24,7 @@
 /**
  * @file It contains the implementation of [MVC module builder]{@link MVCModule}
  *
- * @requires underscore.js
+ * @requires lodash.js
  *
  * @author Valerii Zinchenko
  *
