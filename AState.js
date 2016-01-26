@@ -31,7 +31,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 'use strict';
@@ -64,31 +64,33 @@ function AState(ViewConstructor, ControlConstructor) {
 	 * @type {Class}
 	 *
 	 * @constructor
+	 * @param {Object} model - Model object.
+	 * @param {Object} [config] - State's configurations.
 	 */
 	return new Class({
 		/**
 		 * Reference to the model.
 		 *
-		 * @type {Class}
+		 * @type {Objcet}
 		 */
 		model: null,
 
 		/**
 		 * Reference to the view.
 		 *
-		 * @type {Class}
+		 * @type {AStateComponent}
 		 */
 		view: null,
 
 		/**
 		 * Reference to the control.
 		 *
-		 * @type {Class}
+		 * @type {AStateComponent}
 		 */
 		control: null,
 
 		/**
-		 * This indicates if state component is already connected or not.
+		 * This indicates if a state components are already connected or not.
 		 *
 		 * @type {Boolean}
 		 *
@@ -96,18 +98,16 @@ function AState(ViewConstructor, ControlConstructor) {
 		 */
 		_isConnected: false,
 
-		initialize: function(model) {
+		initialize: function(model, config) {
 			if (!model) {
 				throw new Error('Model is undefined');
 			}
 			this.model = model;
 
-			this.view = new ViewConstructor();
-			this.view.setModel(this.model);
+			this.view = new ViewConstructor(this.model, config);
 
 			if (ControlConstructor) {
-				this.control = new ControlConstructor();
-				this.control.setModel(this.model);
+				this.control = new ControlConstructor(this.model, config);
 			}
 
 			this.connect();
@@ -115,7 +115,7 @@ function AState(ViewConstructor, ControlConstructor) {
 		},
 
 		/**
-		 * Connect all MVC components in current state of the model.
+		 * Connect all MVC components in a current model's state.
 		 */
 		connect: function() {
 			if (this._isConnected) {

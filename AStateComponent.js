@@ -31,7 +31,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 'use strict';
@@ -42,35 +42,46 @@
  *
  * @type {Class}
  *
+ * @throws {Error} Model for the state is not defined
+ *
  * @constructor
+ * @param {Object} model - Model
+ * @param {Object} [config] - Component's state's configurations.
  */
 var AStateComponent = new Class({
 	/**
 	 * Reference to the model.
 	 *
-	 * @type {Class}
+	 * @type {Objcet}
 	 */
 	model: null,
 
 	/**
-	 * Constructor.
+	 * Component's configurations.
+	 *
+	 * @type {Object}
 	 */
-	initialize: function() {},
+	config: null,
+
+	// constructor
+	initialize: function(model, config) {
+		if (!utils.is(model, 'Object')) {
+			throw new Error('Model for the state is not defined');
+		}
+
+		this.model = model;
+
+		if (config && utils.is(config, 'Object')) {
+			this.config = config;
+		}
+	},
 
 	/**
 	 * Destructor.
 	 */
 	destruct: function() {
 		this.model = null;
-	},
-
-	/**
-	 * Set model.
-	 *
-	 * @param {Object} model - Model
-	 */
-	setModel: function(model) {
-		this.model = model;
+		this.config = null;
 	},
 
 	/**

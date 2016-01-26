@@ -30,7 +30,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.1.0
  */
 
 'use strict';
@@ -55,15 +55,9 @@ var DynamicView = new Class(AView, {
 	/**
 	 * Render the view.
 	 *
-	 * @throws {Error} Model is not connected
-	 *
 	 * @returns {jQueryDOMElement}
 	 */
 	render: function() {
-		if (!this.model) {
-			throw new Error('Model is not connected');
-		}
-
 		this._processTemplate();
 		this._initElements();
 		this._attachEvents();

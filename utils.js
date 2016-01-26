@@ -27,7 +27,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.3
+ * @version 1.1.0
  */
 
 'use strict';
@@ -127,13 +127,34 @@ var utils = {
     },
 
 	/**
+	 * Get the type of the data
+	 *
+	 * @param {*} data - Data what will be discovered
+	 * @return {String} - Type of the data
+	 */
+	whatIs: function(data) {
+		return Object.prototype.toString.call(data);
+	},
+
+	/**
+	 * Check the specific type of an input argument.
+	 *
+	 * @param {*} data - Argument that will be checked.
+	 * @param {String} type - Expected type name, like Object, Array etc.
+	 * @return {boolean}
+	 */
+	is: function(data, type) {
+		return this.whatIs(data) === '[object ' + type + ']';
+	},
+
+	/**
 	 * Check if input argument is Object.
 	 *
 	 * @param {*} data - Argument that will be checked.
 	 * @return {boolean}
 	 */
 	isObject: function(data) {
-		return Object.prototype.toString.call(data) == '[object Object]';
+		return this.is(data, 'Object');
 	},
 
 	/**
@@ -143,7 +164,7 @@ var utils = {
 	 * @return {boolean}
 	 */
 	isArray: function(data) {
-		return Object.prototype.toString.call(data) == '[object Array]';
+		return this.is(data, 'Array');
 	},
 
 	/**
@@ -153,7 +174,7 @@ var utils = {
 	 * @return {boolean}
 	 */
 	isString: function(data) {
-		return Object.prototype.toString.call(data) == '[object String]';
+		return this.is(data, 'String');
 	},
 
 	/**
