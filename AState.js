@@ -22,115 +22,100 @@
 */
 
 /**
- * @file It contains the implementation of [abstract state]{@link FState}
+ * @file It contains the implementation of a [state]{@link State}
  *
  * @see {@link AStateComponent}
  * @see {@link AView}
  * @see {@link AControl}
- * @see {@link MVCModule}
+ * @see {@link AFState}
  *
  * @author Valerii Zinchenko
  *
- * @version 1.1.0
+ * @version 2.0.0
  */
 
 'use strict';
 
 /**
- * Abstract state factory.
- * It builds specified state depending on input state component.
+ * Abstract state.
  *
- * @param {AStateComponent} ViewConstructor - Constructor for the view component.
- * @param {AStateComponent} [ControlConstructor] - Constructor for the control component.
+ * @type {Class}
  *
- * @throws {Error} Incorrect input arguments. Expected AStateComponent ViewConstructor, [AStateComponent ControlConstructor]
- * @throws {Error} View constructor should be inherited from AStateComponent
- * @throws {Error} Control constructor should be inherited from AStateComponent
+ * @throws {Error} Incorrect type of the model. Expected: Object
+ * @throws {Error} View constructor should be inherited from AStateComponen
+ *
+ * @constructor
+ * @param {Object} model - Model
+ * @param {Object} view - State view
+ * @param {Object} [control] - State control
  */
-function AState(ViewConstructor, ControlConstructor) {
-	if (!ViewConstructor) {
-		throw new Error('Incorrect input arguments. Expected AStateComponent ViewConstructor, [AStateComponent ControlConstructor]');
-	}
-	if (!(ViewConstructor.prototype instanceof AStateComponent)) {
-		throw new Error('View constructor should be inherited from AStateComponent');
-	}
-	if (ControlConstructor && !(ControlConstructor.prototype instanceof AStateComponent)) {
-		throw new Error('Control constructor should be inherited from AStateComponent');
-	}
+var State = new Class({
+	/**
+	 * Reference to the model.
+	 *
+	 * @type {Objcet}
+	 */
+	model: null,
 
 	/**
-	 * Abstract state.
+	 * Reference to the view.
 	 *
-	 * @type {Class}
-	 *
-	 * @constructor
-	 * @param {Object} model - Model object.
-	 * @param {Object} [config] - State's configurations.
+	 * @type {AStateComponent}
 	 */
-	return new Class({
-		/**
-		 * Reference to the model.
-		 *
-		 * @type {Objcet}
-		 */
-		model: null,
+	view: null,
 
-		/**
-		 * Reference to the view.
-		 *
-		 * @type {AStateComponent}
-		 */
-		view: null,
+	/**
+	 * Reference to the control.
+	 *
+	 * @type {AStateComponent}
+	 */
+	control: null,
 
-		/**
-		 * Reference to the control.
-		 *
-		 * @type {AStateComponent}
-		 */
-		control: null,
+	/**
+	 * This indicates if a state components are already connected or not.
+	 *
+	 * @type {Boolean}
+	 */
+	_isConnected: false,
 
-		/**
-		 * This indicates if a state components are already connected or not.
-		 *
-		 * @type {Boolean}
-		 *
-		 * @throws {Error} Model is undefined
-		 */
-		_isConnected: false,
-
-		initialize: function(model, config) {
-			if (!model) {
-				throw new Error('Model is undefined');
-			}
-			this.model = model;
-
-			this.view = new ViewConstructor(this.model, config);
-
-			if (ControlConstructor) {
-				this.control = new ControlConstructor(this.model, config);
-			}
-
-			this.connect();
-			this.view.render();
-		},
-
-		/**
-		 * Connect all MVC components in a current model's state.
-		 */
-		connect: function() {
-			if (this._isConnected) {
-				return;
-			}
-
-			if (this.control) {
-				this.view.setControl(this.control);
-				this.control.setView(this.view);
-
-				this.control.connect();
-			}
-			this.view.connect();
-
-			this._isConnected = true;
+	initialize: function(model, view, control) {
+		if (!utils.is(model, 'Object')) {
+			throw new Error('Incorrect type of the model. Expected: Object');
 		}
-	});
-}
+		if (!(view instanceof AStateComponent)) {
+			throw new Error('View constructor should be inherited from AStateComponent');
+		}
+		if (control && control instanceof AStateComponent) {
+			this.control = control;
+		}
+
+		this.model = model;
+		this.view = view;
+
+		this.connect();
+
+		this.view.render();
+	},
+
+	/**
+	 * Connect state components
+	 */
+	connect: function() {
+		if (this._isConnected) {
+			return;
+		}
+
+		this.view.setModel(this.model);
+		if (this.control) {
+			this.view.setControl(this.control);
+
+			this.control.setModel(this.model);
+			this.control.setView(this.view);
+
+			this.control.connect();
+		}
+		this.view.connect();
+
+		this._isConnected = true;
+	}
+});

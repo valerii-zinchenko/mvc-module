@@ -24,10 +24,9 @@
 /**
  * @file It contains the implementation of [abstract state component]{@link AStateComponent} creator.
  *
- * @see {@link AState}
+ * @see {@link State}
  * @see {@link AView}
  * @see {@link AControl}
- * @see {@link MVCModule}
  *
  * @author Valerii Zinchenko
  *
@@ -42,10 +41,7 @@
  *
  * @type {Class}
  *
- * @throws {Error} Model for the state is not defined
- *
  * @constructor
- * @param {Object} model - Model
  * @param {Object} [config] - Component's state's configurations.
  */
 var AStateComponent = new Class({
@@ -63,14 +59,16 @@ var AStateComponent = new Class({
 	 */
 	config: null,
 
+	/**
+	 * Connect view component to the module.
+	 * This is called after constructor and setting of the model and control components.
+	 *
+	 * @abstract
+	 */
+	connect: function() {},
+
 	// constructor
-	initialize: function(model, config) {
-		if (!utils.is(model, 'Object')) {
-			throw new Error('Model for the state is not defined');
-		}
-
-		this.model = model;
-
+	initialize: function(config) {
 		if (config && utils.is(config, 'Object')) {
 			this.config = config;
 		}
@@ -85,10 +83,17 @@ var AStateComponent = new Class({
 	},
 
 	/**
-	 * Connect view component to the module.
-	 * This is called after constructor and setting of the model and control components.
+	 * Set model for the state component.
 	 *
-	 * @abstract
+	 * @throws {Error} Model for the state is not defined
+	 *
+	 * @param {Object} model - Model
 	 */
-	connect: function() {}
+	setModel: function(model) {
+		if (!utils.is(model, 'Object')) {
+			throw new Error('Model for the state is not defined');
+		}
+
+		this.model = model;
+	}
 });

@@ -39,7 +39,7 @@
  *
  * @name States
  * @type {Object}
- * @property {AState} stateName - Object of constructors for state with name "stateName"
+ * @property {State} stateName - Object of constructors for state with name "stateName"
  */
 
 
@@ -50,14 +50,14 @@
  * @throws {Error} Model constructor should be a function
  * @throws {Error} No model states are defined
  * @throws {Error} Incorrect type for defined model states
- * @throws {Error} Incorrect type of state "{state}", Function expected
+ * @throws {Error} Incorrect type of a state "{state}", Function expected
  *
  * @param {Object} MVCConstructors - Object of constructors for each sub-module
  * @param {ClassConstructor} MVCConstructors.Model - Constructor for Model
- * @param {States} MVCConstructors.states - Define model states. Each state should be an object and have the constructor for view and control
+ * @param {Object} MVCConstructors.states - Model states, where key is a state name and vaule is a state factory. See [AFState]{@link AFState}
  * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View. Usefull for modules with single state (without defining "states")
  * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control. Usefull for modules with single state (without defining "states")
- * @return {Function}
+ * @return {BMVCModule}
  */
 function AFMVCModule(MVCConstructors) {
 	if (!utils.is(MVCConstructors, 'Object')) {
@@ -73,7 +73,7 @@ function AFMVCModule(MVCConstructors) {
 	}
 	if (!MVCConstructors.states) {
 		MVCConstructors.states = {
-			_implicit: new AState(MVCConstructors.View, MVCConstructors.Control)
+			_implicit: AFState(MVCConstructors.View, MVCConstructors.Control)
 		};
 	}
 	if (!utils.is(MVCConstructors.states, 'Object')) {
@@ -82,15 +82,18 @@ function AFMVCModule(MVCConstructors) {
 
 	for (var state in MVCConstructors.states) {
 		if (!utils.is(MVCConstructors.states[state], 'Function')) {
-			throw new Error('Incorrect type of state "' + state + '", Function expected');
+			throw new Error('Incorrect type of a state "' + state + '", Function expected');
 		}
 	}
 
 
 	/**
-	 * The actual module builder.
+	 * Module builder.
 	 * This automates the creation of each sub-modules (Model, View, Control) and binding them for each other
 	 * to let know the each module about other sub-modules.
+	 *
+	 * @name BMVCModule
+	 * @type {Function}
 	 *
 	 * @param {Array} modelArgs - Input arguments for a Model.
 	 * @param {Object} statesConfigs - Model's states' configurations, where a key should be a state name and a value should be a state configuration.

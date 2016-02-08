@@ -77,7 +77,7 @@ var MVCModule = new Class({
 	 * @throws {Error} Undefined state "{stateName}"
 	 *
 	 * @param {string} [stateName] - State name. Used only when states were explicit defined
-	 * @return {AState}
+	 * @return {State}
 	 */
 	useState: function(stateName) {
 		if (this.states._implicit) {
