@@ -26,38 +26,25 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 'use strict';
 
 /**
- * States.
- * Array-like object of model states.
+ * Abstract MVC module factory.
+ * Result of a factory is a builder function.
  *
- * @note This is for documentation only.
- *
- * @name States
- * @type {Object}
- * @property {State} stateName - Object of constructors for state with name "stateName"
- */
-
-
-/**
- * MVC module abstract factory.
- *
- * @throws {Error} Incorrect type of input argumen. Expected: Object MVCConstructors
+ * @throws {Error} Incorrect type of an input argument. Expected: Object MVCConstructors
  * @throws {Error} Model constructor should be a function
- * @throws {Error} No model states are defined
- * @throws {Error} Incorrect type for defined model states
+ * @throws {Error} Incorrect type for model's states
  * @throws {Error} Incorrect type of a state "{state}", Function expected
  *
- * @param {Object} MVCConstructors - Object of constructors for each sub-module
- * @param {ClassConstructor} MVCConstructors.Model - Constructor for Model
- * @param {Object} MVCConstructors.states - Model states, where key is a state name and vaule is a state factory. See [AFState]{@link AFState}
- * @param {ClassConstructor} [MVCConstructors.View] - Constructor for View. Usefull for modules with single state (without defining "states")
- * @param {ClassConstructor} [MVCConstructors.Control] - Constructor for Control. Usefull for modules with single state (without defining "states")
- * @return {BMVCModule}
+ * @param {Object} MVCConstructors - Module's constructors
+ * @param {Function} MVCConstructors.Model - Model's constructor
+ * @param {Object} MVCConstructors.States - States' constructors, where key is a state name and vaule is a stste's constructor
+ * @param {Function} [MVCConstructors.Module = MVCModule] - Module's constructor. In case when this is not a function constructor of MVCModule will be used.
+ * @return {Function} Module builder
  */
 function AFMVCModule(MVCConstructors) {
 	if (!utils.is(MVCConstructors, 'Object')) {
@@ -68,48 +55,42 @@ function AFMVCModule(MVCConstructors) {
 		throw new Error('Model constructor should be a function');
 	}
 
-	if (!MVCConstructors.states && !MVCConstructors.View) {
-		throw new Error('No model states are defined');
-	}
-	if (!MVCConstructors.states) {
-		MVCConstructors.states = {
-			_implicit: AFState(MVCConstructors.View, MVCConstructors.Control)
-		};
-	}
-	if (!utils.is(MVCConstructors.states, 'Object')) {
-		throw new Error('Incorrect type for defined model states');
+	if (!utils.is(MVCConstructors.States, 'Object')) {
+		throw new Error('Incorrect type for model\'s states');
 	}
 
-	for (var state in MVCConstructors.states) {
-		if (!utils.is(MVCConstructors.states[state], 'Function')) {
+	for (var state in MVCConstructors.States) {
+		if (!utils.is(MVCConstructors.States[state], 'Function')) {
 			throw new Error('Incorrect type of a state "' + state + '", Function expected');
 		}
 	}
 
+	if (!utils.is(MVCConstructors.Module, 'Function')) {
+		MVCConstructors.Module = MVCModule;
+	}
 
 	/**
 	 * Module builder.
-	 * This automates the creation of each sub-modules (Model, View, Control) and binding them for each other
-	 * to let know the each module about other sub-modules.
-	 *
-	 * @name BMVCModule
-	 * @type {Function}
 	 *
 	 * @param {Array} modelArgs - Input arguments for a Model.
 	 * @param {Object} statesConfigs - Model's states' configurations, where a key should be a state name and a value should be a state configuration.
+	 * @return {Object} New module
 	 */
 	return function(modelArgs, statesConfigs) {
 		// Build model
-		var model = new ( MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(modelArgs)) );
-		var states = {};
+		var model = new ( MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(modelArgs)) )();
 
-		// Build model states
+		// Build model's states
+		var states = {};
 		var config;
-		for (var stateName in MVCConstructors.states) {
-			config = statesConfigs ? statesConfigs[stateName] : undefined;
-			states[stateName] = new MVCConstructors.states[stateName](model, config);
+		for (state in MVCConstructors.States) {
+			if (statesConfigs) {
+				config = statesConfigs[state];
+			}
+
+			states[state] = new MVCConstructors.States[state](model, config);
 		}
 
-		return new MVCModule(model, states);
-	};
-}
+		return new MVCConstructors.Module(model, states);
+	}
+};
