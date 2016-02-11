@@ -70,8 +70,7 @@ var MVCModule = new Class({
 	},
 
 	/**
-	 * Specify which state will be used.
-	 * this.view and this.control will point to the View and Control of specific model state.
+	 * Get specific model's state.
 	 *
 	 * @throws {Error} Incorrect type of the input argument. Expected: String stateName
 	 * @throws {Error} Undefined state "{stateName}"
@@ -79,7 +78,7 @@ var MVCModule = new Class({
 	 * @param {String} stateName - State name
 	 * @return {State}
 	 */
-	useState: function(stateName) {
+	getState: function(stateName) {
 		if (!utils.is(stateName, 'String')) {
 			throw new Error('Incorrect type of the input argument. Expected: String stateName');
 		}
