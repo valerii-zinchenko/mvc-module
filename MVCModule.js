@@ -76,14 +76,10 @@ var MVCModule = new Class({
 	 * @throws {Error} Incorrect type of the input argument. Expected: String stateName
 	 * @throws {Error} Undefined state "{stateName}"
 	 *
-	 * @param {string} [stateName] - State name. Used only when states were explicit defined
+	 * @param {String} stateName - State name
 	 * @return {State}
 	 */
 	useState: function(stateName) {
-		if (this.states._implicit) {
-			return this.states._implicit;
-		}
-
 		if (!utils.is(stateName, 'String')) {
 			throw new Error('Incorrect type of the input argument. Expected: String stateName');
 		}
