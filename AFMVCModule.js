@@ -26,7 +26,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 2.0.0
+ * @version 2.1.0
  */
 
 'use strict';
@@ -73,10 +73,11 @@ function AFMVCModule(MVCConstructors) {
 	 * Module builder.
 	 *
 	 * @param {Array} modelArgs - Input arguments for a Model.
-	 * @param {Object} statesConfigs - Model's states' configurations, where a key should be a state name and a value should be a state configuration.
-	 * @return {Object} New module
+	 * @param {Object} [envStateMap] - Map of environment name to a model's state name.
+	 * @param {Object} [statesConfigs] - Model's states' configurations, where a key should be a state name and a value should be a state configuration.
+	 * @return {Object} New module.
 	 */
-	return function(modelArgs, statesConfigs) {
+	return function(modelArgs, envStateMap, statesConfigs) {
 		// Build model
 		var model = new ( MVCConstructors.Model.bind.apply(MVCConstructors.Model, [null].concat(modelArgs)) )();
 
@@ -91,6 +92,6 @@ function AFMVCModule(MVCConstructors) {
 			states[state] = new MVCConstructors.States[state](model, config);
 		}
 
-		return new MVCConstructors.Module(model, states);
+		return new MVCConstructors.Module(model, states, envStateMap);
 	}
 };

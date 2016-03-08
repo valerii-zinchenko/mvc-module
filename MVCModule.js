@@ -26,7 +26,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 4.0.0
+ * @version 4.1.0
  */
 
 'use strict';
@@ -43,6 +43,7 @@
  * @constructor
  * @param {Object} model - Model.
  * @param {Object} states - Object of model's states, where the key is a state name and value is a state object.
+ * @param {Object} [envStateMap] - Map of environt name to a model's state name.
  */
 var MVCModule = new Class({
 	/**
@@ -59,35 +60,52 @@ var MVCModule = new Class({
 	 */
 	states: null,
 
+	/**
+	 * Map of target environment name to a model's state name.
+	 *
+	 * @type {Object}
+	 */
+	envStateMap: {},
+
 	// constructor
-	initialize: function(model, states) {
+	initialize: function(model, states, envStateMap) {
 		if (!utils.is(model, 'Object') || !utils.is(states, 'Object')) {
 			throw new Error('Incorrect types of input arguments. Expected: Object model, Object states');
 		}
 
 		this.model = model;
 		this.states = states;
+
+		if (utils.is(envStateMap, 'Object')) {
+			this.envStateMap = envStateMap;
+		}
 	},
 
 	/**
 	 * Get specific model's state.
 	 *
-	 * @throws {Error} Incorrect type of the input argument. Expected: String stateName
-	 * @throws {Error} Undefined state "{stateName}"
-	 *
-	 * @param {String} stateName - State name
-	 * @return {State}
+	 * @param {String} stateName - State name.
+	 * @param {String | [String]} [decorators] - State's decorators.
+	 * @return {State | Null}
 	 */
-	getState: function(stateName) {
-		if (!utils.is(stateName, 'String')) {
-			throw new Error('Incorrect type of the input argument. Expected: String stateName');
-		}
-
+	getState: function(stateName, decorators) {
 		var state = this.states[stateName];
-		if (!state) {
-			throw new Error('Undefined state "' + stateName + '"');
+
+		if (state && decorators) {
+			state.decorateWith(decorators);
 		}
 
-		return state;
+		return state || null;
+	},
+
+	/**
+	 * Get model's state based on a target environment.
+	 *
+	 * @param {String} env - Target environment.
+	 * @param {String | [String]} [decorators] - State's decorators.
+	 * @return {State | Null}
+	 */
+	getStateFor: function(env, decorators){
+		return this.getState(this.envStateMap[env], decorators);
 	}
 });
