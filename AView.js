@@ -65,6 +65,7 @@ var AView = new Class(AStateComponent, {
 	destruct: function() {
 		this.$el.remove();
 		this.control = null;
+
 		AStateComponent.prototype.destruct.call(this);
 	},
 

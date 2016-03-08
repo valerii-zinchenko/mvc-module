@@ -29,7 +29,7 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 2.0.0
  */
 
 'use strict';
@@ -38,15 +38,25 @@
  * Abstract state factory.
  * It builds specified state depending on input state component.
  *
- * @throws {Error} Incorrect input arguments. Expected Function ViewConstructor, [Function ControlConstructor]
+ * @throws {Error} Incorrect type of the constructors. Object expected.
+ * @throws {Error} Incorrect type of a view\'s constructor. Expected: Function
+ * @throws {Error} Incorrect type of a control\'s constructor. Expected: Function
  *
- * @param {Function} ViewConstructor - Constructor for the view component.
- * @param {Function} [ControlConstructor] - Constructor for the control component.
+ * @param {Object} Constructors - Collection of constructors for a state.
+ * @param {Function} Constructors.View - Constructor for the view component.
+ * @param {Function} [Constructors.Control] - Constructor for the control component.
+ * @param {Object} [Constructors.Decorators] - Map of decorators' names and decorators' construstors for a new state. If some constructor is not a function, then it will be skipped in order to avoid NPE
  * @return {BState} State builder.
  */
-function AFState(ViewConstructor, ControlConstructor) {
-	if (!utils.is(ViewConstructor, 'Function') || (ControlConstructor && !utils.is(ControlConstructor, 'Function')) ) {
-		throw new Error('Incorrect input arguments. Expected Function ViewConstructor, [Function ControlConstructor]');
+function AFState(Constructors) {
+	if (!utils.is(Constructors, 'Object')) {
+		throw new Error('Incorrect type of the constructors. Object expected.');
+	}
+	if (!utils.is(Constructors.View, 'Function')) {
+		throw new Error('Incorrect type of a view\'s constructor. Expected: Function');
+	}
+	if (Constructors.Control && !utils.is(Constructors.Control, 'Function')) {
+		throw new Error('Incorrect type of a control\'s constructor. Expected: Function');
 	}
 
 	/**
@@ -56,17 +66,35 @@ function AFState(ViewConstructor, ControlConstructor) {
 	 * @type {Function}
 	 *
 	 * @param {Object} model - Model object.
-	 * @param {Object} [config] - State's configurations. These configuration will be set to the state\'s view and control components.
+	 * @param {Object} [config] - State's configurations. These configuration will be set to the state's view and control components.
 	 * @return {State}
 	 */
 	return function(model, config) {
-		var view = new ViewConstructor(config);
+		var view = new Constructors.View(config);
 
-		var control;
-		if (ControlConstructor) {
-			control = new ControlConstructor(config);
+		var decorators;
+		if (Constructors.Decorators && utils.is(Constructors.Decorators, 'Object')) {
+			decorators = {};
+			for (var key in Constructors.Decorators) {
+				if (utils.is(Constructors.Decorators[key], 'Function')) {
+					decorators[key] = new Constructors.Decorators[key](config);
+				} else {
+					console.warn('Incompatible decorator\'s constructor: "' + key + '"! It should be inherited from an ADecorator');
+				}
+			}
 		}
 
-		return new State(model, view, control);
+		var control;
+		if (Constructors.Control) {
+			control = new Constructors.Control(config);
+		}
+
+		return new State({
+			model: model,
+			view: view,
+			decorators: decorators,
+			control: control,
+			config: config
+		});
 	}
 }
