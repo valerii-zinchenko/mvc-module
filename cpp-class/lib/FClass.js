@@ -29,20 +29,17 @@
  *
  * @author Valerii Zinchenko
  *
- * @version 1.0.0
+ * @version 1.0.1
  */
 
 'use strict';
 
 /**
- * Main abstract class creator.
- * It takes the function that will be used as class constructor and wraps it,
- * in order to automate constructor creation. Based on this abstract class creator it is possible to create
- * usual well known Class as in low level programming language like C++, Java etc., or easy to implement
- * Singleton pattern.
+ * Main class factory.
+ * It takes the function that will be used as class constructor and wraps it in order to automate constructor creation.
+ * With this class factory it is possible to create an usual well known class as in C++ programming language.
  *
- * The new created class constructor will have the reference to the parent class (in 'parent' property),
- * inherited methods and merged '_default' property object.
+ * The new created class constructor will have the reference to the parent class (in 'parent' property), inherited methods and merged '_default' property object.
  *
  * @constructor
  * @param {Function} Constructor - Main class constructor subroutine.
@@ -63,9 +60,9 @@ function FClass(Constructor) {
     }
 
 	/**
-	 * Ecapsulate methods and properties from 'what' object or Class into 'to' Class.
+	 * Encapsulate methods and properties from 'what' object or Class into 'to' Class.
 	 *
-	 * @param {Objcet | Class} what - Object or Class that will be encapsulated.
+	 * @param {Object | Class} what - Object or Class that will be encapsulated.
 	 * @param {Class} to - Class where the methods and properties will be encapsulated.
 	 */
 	function encapsulate(what, to) {
