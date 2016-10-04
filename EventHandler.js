@@ -23,10 +23,16 @@
 
 'use strict';
 
-var EventHandler = new Class({
+/**
+ * Event handler
+ *
+ * @class
+ */
+var EventHandler = Class(/** @lends EventHandler.prototype */{
 	/**
 	 * Holder of registered events
 	 *
+	 * @private
 	 * @type {Object}
 	 */
 	_events: {},
@@ -55,7 +61,7 @@ var EventHandler = new Class({
 	 * Trigger specific event.
 	 *
 	 * @param {String} eventName - Event name that should be triggered
-	 * @param {[*]} [...rest] - Arguments that will be applied to the registered event handlers
+	 * @param [...rest] - Arguments that will be applied to the registered event handlers
 	 */
 	trigger: function(eventName) {
 		var events = this._events[eventName];
