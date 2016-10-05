@@ -1,3 +1,5 @@
+'use strict';
+
 suite('StaticView', function(){
 	suite('Constructor', function(){
 		teardown(function(){
