@@ -1,11 +1,11 @@
 {
-  "name": "mvcmodule",
+  "name": "mvc-module",
   "version": "0.9.0",
   "description": "MVCModule",
   "main": "lib/ClassBuilder.js",
   "author": "Valerii Zinchenko",
   "license": "MIT",
-  "repository": "valerii-zinchenko/mvcmodule",
+  "repository": "valerii-zinchenko/mvc-module",
   "scripts": {
     "preversion": "grunt test",
     "prepublish": "grunt build"
