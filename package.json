@@ -11,11 +11,9 @@
     "prepublish": "grunt build"
   },
   "directories": {
-    "scr": "lib",
     "dest": "dest",
     "doc": "doc",
     "test": "test",
-    "js-for-coverage": "js-cov",
     "coverage": "coverage"
   },
   "dependencies": {
