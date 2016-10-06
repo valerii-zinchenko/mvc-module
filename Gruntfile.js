@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 			},
 			dest: {
 				src: [
-					'dep2vars'
+					'dep2vars',
 					'utils',
 					'AStateComponent',
 					'AControl',
