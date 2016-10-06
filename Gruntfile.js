@@ -19,19 +19,20 @@ module.exports = function(grunt) {
 			},
 			dest: {
 				src: [
-					'utils.js',
-					'AStateComponent.js',
-					'AControl.js',
-					'AView.js',
-					'StaticView.js',
-					'DynamicView.js',
-					'ADecorator.js',
-					'State.js',
-					'AFState.js',
-					'MVCModule.js',
-					'AFMVCModule.js',
-					'EventHandler.js'
-				].map(function(item) { return src + item; }),
+					'dep2vars'
+					'utils',
+					'AStateComponent',
+					'AControl',
+					'AView',
+					'StaticView',
+					'DynamicView',
+					'ADecorator',
+					'State',
+					'AFState',
+					'MVCModule',
+					'AFMVCModule',
+					'EventHandler'
+				].map(function(item) { return src + item + '.js'; }),
 				dest: '<%= pkg.directories.dest %>/<%= pkg.name %>.js'
 			}
 		},
