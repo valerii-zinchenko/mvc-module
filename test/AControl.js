@@ -3,7 +3,7 @@
 suite('AControl', function() {
 	suite('Constructor', function(){
 		test('Inheritance', function(){
-			assert.instanceOf(AControl.prototype, AStateComponent, 'AControl should be inherited from AStateComponent');
+			assert.instanceOf(new AControl(), AStateComponent, 'AControl should be inherited from AStateComponent');
 		});
 	});
 
@@ -19,11 +19,32 @@ suite('AControl', function() {
 		});
 
 		suite('setView', function(){
-			test('incorrect view instance', function(){
-				[undefined, null, false, true, 0, 1, '', '1', [], {}, function(){}].forEach(function(testCase){
-					assert.throw(function(){
-						aControl.setView(testCase);
-					}, Error, 'Incorrect type of view component');
+			suite('incorrect view instance', function(){
+				[].concat(
+					[
+						undefined,
+						null,
+						false,
+						true,
+						0,
+						1,
+						'',
+						'1',
+						[],
+						{},
+						function(){}
+					].map(function(input){
+						return {
+							title: 'when type of input: ' + Object.prototype.toString.call(input) + ' and value: ' + input,
+							input: input
+						};
+					})
+				).forEach(function(testCase){
+					test(testCase.title, function(){
+						assert.throw(function(){
+							aControl.setView(testCase.input);
+						}, Error, 'Incorrect type of view component');
+					});
 				});
 			});
 

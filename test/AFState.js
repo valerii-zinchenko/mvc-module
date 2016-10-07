@@ -2,7 +2,7 @@
 
 suite('AFState', function(){
 	suite('incorrect input argument', function(){
-		suite('type of Constructors', function(){
+		[].concat(
 			[
 				undefined,
 				null,
@@ -14,16 +14,13 @@ suite('AFState', function(){
 				'str',
 				[],
 				function(){}
-			].forEach(function(testCase){
-				test(JSON.stringify(testCase), function(){
-					assert.throw(function(){
-						AFState(testCase);
-					}, Error, 'Incorrect type of the constructors. Object expected.');
-				});
-			});
-		});
-
-		suite('type of Constructors.View', function(){
+			].map(function(input){
+				return {
+					title: 'type of an input argument: ' + Object.prototype.toString.call(input) + ' with a value: ' + input,
+					input: input,
+					expected: 'Incorrect type of the constructors. Object expected.'
+				};
+			}),
 			[
 				undefined,
 				null,
@@ -35,31 +32,34 @@ suite('AFState', function(){
 				'str',
 				[],
 				{}
-			].forEach(function(testCase){
-				test(JSON.stringify(testCase), function(){
-					assert.throw(function(){
-						AFState({View: testCase});
-					}, Error, 'Incorrect type of a view\'s constructor. Expected: Function');
-				});
-			});
-		});
-
-		suite('type of Constructors.Control', function(){
+			].map(function(input){
+				return {
+					title: 'type of a View constructor: ' + Object.prototype.toString(input) + ' with a value: ' + input,
+					input: {View: input},
+					expected: 'Incorrect type of a view\'s constructor. Expected: Function'
+				};
+			}),
 			[
 				true,
 				1,
 				'str',
 				[],
 				{}
-			].forEach(function(testCase){
-				test(JSON.stringify(testCase), function(){
-					assert.throw(function(){
-						AFState({
-							View: function(){},
-							Control: testCase
-						});
-					}, Error, 'Incorrect type of a control\'s constructor. Expected: Function');
-				});
+			].map(function(input){
+				return {
+					title: 'type of a Controller: ' + Object.prototype.toString(input) + ' with a value: ' + input,
+					input: {
+						View: function(){},
+						Control: input
+					},
+					expected: 'Incorrect type of a control\'s constructor. Expected: Function'
+				};
+			})
+		).forEach(function(testCase){
+			test(testCase.title, function(){
+				assert.throw(function(){
+					AFState(testCase.input);
+				}, Error, testCase.expected);
 			});
 		});
 	});
@@ -140,7 +140,7 @@ suite('AFState', function(){
 		});
 
 		test('with Decorators', function(){
-			var Deco = new Class(ADecorator, {
+			var Deco = new Class(ADecorator, null, {
 				initialize: sinon.stub()
 			});
 			var incorrectDeco = {};

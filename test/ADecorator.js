@@ -25,7 +25,7 @@ suite('ADecorator', function(){
 
 		suite('setComponent', function(){
 			[undefined, null, false, true, 0, 1, '', 'str', [], {}, function(){}].forEach(function(input){
-				test(input, function(){
+				test('type of an argument: ' + Object.prototype.toString.call(input) + ' with a value: ' + input, function(){
 					assert.throw(function(){
 						deco.setComponent(input);
 					}, Error, 'Incorrect type of the "component" argument. Expected AView');

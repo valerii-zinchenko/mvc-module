@@ -28,7 +28,7 @@ suite('State', function(){
 					};
 				})
 			).forEach(function(testCase){
-				test(JSON.stringify(testCase.input), function(){
+				test('input: ' + JSON.stringify(testCase.input), function(){
 					assert.throw(function(){
 						new State(testCase.input);
 					}, Error, testCase.exception);
@@ -39,7 +39,7 @@ suite('State', function(){
 		suite('skip some input property', function(){
 			suite('incompatible control object', function(){
 				[undefined, null, 0, 1, false, true, '', 'str', [], function(){}, {}].forEach(function(testCase){
-					test(testCase, function(){
+					test('input: ' + testCase, function(){
 						var result;
 						assert.doesNotThrow(function(){
 							result = new State({
@@ -56,7 +56,7 @@ suite('State', function(){
 
 			suite('incompatible decorators object', function(){
 				[undefined, null, 0, 1, false, true, '', 'str', [], function(){}].forEach(function(testCase){
-					test(testCase, function(){
+					test('input: ' + testCase, function(){
 						var result;
 						assert.doesNotThrow(function(){
 							result = new State({
@@ -87,7 +87,7 @@ suite('State', function(){
 				var decorators = {
 					notfn: {},
 					incomp: function(){},
-					deco: new (new Class(ADecorator, {}))
+					deco: new (Class(ADecorator, null, {}))
 				};
 
 				var result;
@@ -119,8 +119,8 @@ suite('State', function(){
 				view: new AView(),
 				control: new AControl(),
 				decorators: {
-					deco0: new (new Class(ADecorator, {})),
-					deco1: new (new Class(ADecorator, {}))
+					deco0: new (Class(ADecorator, null, {})),
+					deco1: new (Class(ADecorator, null, {}))
 				}
 			});
 		});
@@ -246,7 +246,7 @@ suite('State', function(){
 			suite('public view', function(){
 				suite('no decorating', function(){
 					[undefined, null, false, true, 0, 1, {}, function(){}, '', []].forEach(function(input){
-						test(JSON.stringify(input), function(){
+						test('input: ' + JSON.stringify(input), function(){
 							assert.doesNotThrow(function(){
 								state.decorateWith(input);
 							});
@@ -289,7 +289,7 @@ suite('State', function(){
 							expected: 'deco1'
 						}
 					].forEach(function(testCase){
-						test(testCase.decorators, function(){
+						test(JSON.stringify(testCase.decorators), function(){
 							assert.doesNotThrow(function(){
 								state.decorateWith(testCase.decorators);
 							});
