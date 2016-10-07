@@ -4,48 +4,25 @@
 	<meta charset="utf-8">
 	<title>Test MVCModule</title>
 
-	<script src="../node_modules/mocha/mocha.js" charset="utf-8"></script>
-	<script src="../node_modules/chai/chai.js" charset="utf-8"></script>
-	<script src="../node_modules/sinon/pkg/sinon.js" charset="utf-8"></script>
-
 	<link rel="stylesheet" href="../node_modules/mocha/mocha.css" type="text/css" media="screen" title="no title" charset="utf-8">
 </head>
 <body>
 	<div id="mocha"></div>
 
+	<script src="../node_modules/mocha/mocha.js" charset="utf-8"></script>
+	<script src="../node_modules/chai/chai.js" charset="utf-8"></script>
+	<script src="../node_modules/sinon/pkg/sinon.js" charset="utf-8"></script>
+
+	<script src="./polifills.js"></script>
+
+	<script src="../node_modules/class-wrapper/dest/class-wrapper.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		var ClassWrapper = window['class-wrapper'];
+	</script>
 	<% if (isPROD) { %>
 	<script src="../dest/mvcmodule.min.js"></script>
 	<% } %>
 	<script type="text/javascript" charset="utf-8">
-		// polifill is from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
-		if (!Function.prototype.bind) {
-			Function.prototype.bind = function(oThis) {
-				if (typeof this !== 'function') {
-					// closest thing possible to the ECMAScript 5
-					// internal IsCallable function
-					throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-				}
-
-				var aArgs   = Array.prototype.slice.call(arguments, 1),
-					fToBind = this,
-					fNOP    = function() {},
-					fBound  = function() {
-						return fToBind.apply(this instanceof fNOP
-								? this
-								: oThis,
-								aArgs.concat(Array.prototype.slice.call(arguments)));
-					};
-
-				if (this.prototype) {
-					// native functions don't have a prototype
-					fNOP.prototype = this.prototype;
-				}
-				fBound.prototype = new fNOP();
-
-				return fBound;
-			};
-		}
-
 		function appendScript(src) {
 			var script = document.createElement('script');
 			script.charset = 'utf-8';
@@ -64,12 +41,13 @@
 
 		var components = [
 			'utils',
+			'AStateComponent',
 			'AControl',
+			'AView',
 			'AFMVCModule',
 			'AFState',
-			'AStateComponent',
-			'AView',
 			'DynamicView',
+			'ADecorator',
 			'EventHandler',
 			'MVCModule',
 			'State',
@@ -86,12 +64,13 @@
 		window.AStateComponent = pkg.AStateComponent;
 		window.AView = pkg.AView;
 		window.DynamicView = pkg.DynamicView;
+		window.ADecorator = pkg.ADecorator;
 		window.EventHandler = pkg.EventHandler;
 		window.MVCModule = pkg.MVCModule;
 		window.State = pkg.State;
 		window.StaticView = pkg.StaticView;
 		<% } else { %>
-		components.forEach(function(component) {
+		['dep2vars'].concat(components).forEach(function(component) {
 			appendScript('<%= jsFolder %>' + component + '.js');
 		});
 		<% } %>
