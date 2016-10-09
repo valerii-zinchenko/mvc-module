@@ -30,8 +30,7 @@ module.exports = function(grunt) {
 					'State',
 					'AFState',
 					'MVCModule',
-					'AFMVCModule',
-					'EventHandler'
+					'AFMVCModule'
 				].map(function(item) { return src + item + '.js'; }),
 				dest: '<%= pkg.directories.dest %>/<%= pkg.name %>.js'
 			}
