@@ -1,11 +1,14 @@
 {
-  "name": "mvc-module",
+  "name": "mvc-pack",
   "version": "0.9.0",
-  "description": "MVCModule",
-  "main": "lib/ClassBuilder.js",
+  "description": "Package of combined patterns to build rich MVC modules",
+  "main": "lib/mvc-pack.js",
   "author": "Valerii Zinchenko",
   "license": "MIT",
-  "repository": "valerii-zinchenko/mvc-module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valerii-zinchenko/mvc-module.git"
+  },
   "scripts": {
     "preversion": "grunt test",
     "prepublish": "grunt build"
@@ -34,5 +37,18 @@
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.0.2",
     "sinon": "^1.17.5"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/valerii-zinchenko/mvc-module/issues"
+  },
+  "homepage": "https://github.com/valerii-zinchenko/mvc-module#readme",
+  "keywords": [
+    "javascript",
+    "mvc",
+    "state",
+    "patterns",
+    "module",
+    "factory",
+    "decorator"
+  ]
 }
