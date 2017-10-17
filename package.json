@@ -20,7 +20,8 @@
     "coverage": "coverage"
   },
   "dependencies": {
-    "class-wrapper": "^1.0.0"
+    "class-wrapper": "^1.0.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",

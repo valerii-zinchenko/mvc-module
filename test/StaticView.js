@@ -7,9 +7,7 @@ suite('StaticView', function(){
 		});
 
 		test('initialize', function(){
-			assert.doesNotThrow(function(){
-				new StaticView({});
-			});
+			new StaticView({});
 		});
 
 		test('is singleton', function(){
@@ -38,9 +36,8 @@ suite('StaticView', function(){
 			});
 
 			test('order of helper methods', function(){
-				assert.doesNotThrow(function(){
-					view.render();
-				});
+				view.render();
+
 				assert.isTrue(view._initElements.calledOnce, '_initElements should be called once');
 				assert.isTrue(view._attachEvents.calledOnce, '_initElements should be called once');
 				assert.isTrue(view._attachEvents.calledAfter(view._initElements), 'Helper methods were called in incorrect order by rendering');

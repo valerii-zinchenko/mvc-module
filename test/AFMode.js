@@ -140,23 +140,20 @@ suite('AFMode', function(){
 		});
 
 		test('with Decorators', function(){
-			var Deco = new Class(ADecorator, null, {
-				initialize: sinon.stub()
-			});
+			var constructor = sinon.stub();
+
+			var Deco = new Class(ADecorator, constructor, {});
 			var incorrectDeco = {};
 
-			var result;
-			assert.doesNotThrow(function(){
-				result = (AFMode({
-					View: AView,
-					Decorators: {
-						Deco: Deco,
-						incorrectDeco: incorrectDeco
-					}
-				}))({});
-			});
+			var result = (AFMode({
+				View: AView,
+				Decorators: {
+					Deco: Deco,
+					incorrectDeco: incorrectDeco
+				}
+			}))({});
 
-			assert.isTrue(Deco.prototype.initialize.calledOnce, 'Decorator should be created in the mode builder');
+			assert.isTrue(constructor.calledOnce, 'Decorator should be created in the mode builder');
 			assert.instanceOf(result._decorators.Deco, Deco, 'Decorator was incorrectly set');
 			assert.isUndefined(result._decorators.incorrectDeco, 'Incorrect docarator should not be passed further to a mode constructor');
 		});

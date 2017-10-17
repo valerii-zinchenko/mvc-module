@@ -9,12 +9,21 @@ suite('AView', function() {
 
 	suite('Methods', function(){
 		var aView;
+
+		// TODO Remove this, after upgrading to a new PhantomJS version and verifying, that this method exists there
+		// Old PhantomJS does not have the implementation for Element.prtotype.remove, so just define a dummy function for it, to be able to run tests from command line
+		if (!Element.prototype.remove) {
+			Element.prototype.remove = function() {};
+		}
+
 		setup(function(){
 			aView = new AView({});
+
 			sinon.spy(AModeComponent.prototype, "destruct");
 		});
 		teardown(function(){
 			aView = null;
+
 			AModeComponent.prototype.destruct.restore();
 		});
 
@@ -37,11 +46,9 @@ suite('AView', function() {
 		});
 
 		test('desctuct', function(){
-			aView.$el = $();
-			assert.doesNotThrow(function(){
-				aView.setControl(new AControl({}));
-				aView.destruct();
-			});
+			aView.$el = document.createElement('div');
+			aView.setControl(new AControl({}));
+			aView.destruct();
 
 			assert.isNull(aView.control, 'destruct() should set view to null');
 			assert.isTrue(AModeComponent.prototype.destruct.calledOnce, 'Parent\'s destruct() should be called');
@@ -57,7 +64,7 @@ suite('AView', function() {
 
 		['show', 'hide'].forEach(function(method) {
 			test(method + '()', function() {
-				aView.$el = $();
+				aView.$el = document.createElement('div');
 				assert.doesNotThrow(function(){
 					aView[method]();
 				});

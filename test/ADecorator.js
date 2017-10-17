@@ -76,34 +76,33 @@ suite('ADecorator', function(){
 			setup(function(){
 				sinon.spy(DynamicView.prototype, 'render');
 
-				sinon.stub($.prototype, 'append');
+				sinon.stub(Element.prototype, 'appendChild');
 			});
 			teardown(function(){
 				DynamicView.prototype.render.restore();
 
-				$.prototype.append.restore();
+				Element.prototype.appendChild.restore();
 			});
 
 			test('without component', function(){
-				assert.doesNotThrow(function(){
-					deco.render();
-				});
+				deco.render();
 
 				assert.isTrue(DynamicView.prototype.render.calledOnce, 'Parent\'s "render" should be called');
-				assert.isFalse($.prototype.append.called, 'Nothing should be appended into the container for the component if the decorator hasn\'t any component');
+				assert.isFalse(Element.prototype.appendChild.called, 'Nothing should be appended into the container for the component if the decorator hasn\'t any component');
 			});
 
 			test('with component', function(){
 				var view = new AView();
 
-				assert.doesNotThrow(function(){
-					deco.setComponent(view);
-					deco.render();
-				});
+				deco.setComponent(view);
+				deco.render();
 
 				assert.isTrue(DynamicView.prototype.render.calledOnce, 'Parent\'s "render" should be called');
-				assert.isTrue($.prototype.append.withArgs(view.$el).calledOnce, 'Decorator should append the decorated component');
-				assert.isTrue(DynamicView.prototype.render.calledBefore($.prototype.append), 'Parent\'s "render" method should be called before the decorator\'s component will be appended');
+				assert.isTrue(Element.prototype.appendChild.calledOnce, 'Decorator should append something into his container');
+				assert.equal(Element.prototype.appendChild.args[0][0], view.$el, 'Decorator should append the decorated component');
+				// ??? For some reasons this line hangs the test runner
+				//assert.isTrue(Element.prototype.appendChild.withArgs(view.$el).calledOnce, 'Decorator should append the decorated component');
+				assert.isTrue(DynamicView.prototype.render.calledBefore(Element.prototype.appendChild), 'Parent\'s "render" method should be called before the decorator\'s component will be appended');
 			});
 		});
 
@@ -138,24 +137,23 @@ suite('ADecorator', function(){
 
 		suite('_processTemplate', function(){
 			setup(function(){
-				sinon.stub($.prototype, 'find');
+				sinon.stub(Element.prototype, 'querySelector');
 				sinon.stub(_, 'template');
 			});
 			teardown(function(){
-				$.prototype.find.restore();
+				Element.prototype.querySelector.restore();
 				_.template.restore();
 			});
 
 			test('processing', function(){
 				var templateRender = sinon.stub();
+				templateRender.returns(deco.template);
 				_.template.withArgs(deco.template).returns(templateRender);
 
-				assert.doesNotThrow(function(){
-					deco._processTemplate();
-				});
+				deco._processTemplate();
 
 				assert.isTrue(templateRender.withArgs({model: deco.model, config: deco.config}).calledOnce, 'Model and configurations should be passed into the template rendering function');
-				assert.isTrue($.prototype.find.withArgs('.component-container').calledOnce, 'Container for the component with the class name "component-container" should be searched');
+				assert.isTrue(Element.prototype.querySelector.withArgs('.component-container').calledOnce, 'Container for the component with the class name "component-container" should be searched');
 			});
 		});
 	});
