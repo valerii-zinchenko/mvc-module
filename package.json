@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/valerii-zinchenko/mvc-module.git"
+    "url": "git+https://github.com/valerii-zinchenko/mvc-pack.git"
   },
   "scripts": {
     "preversion": "grunt test",
@@ -42,9 +42,9 @@
     "sinon": "^1.17.5"
   },
   "bugs": {
-    "url": "https://github.com/valerii-zinchenko/mvc-module/issues"
+    "url": "https://github.com/valerii-zinchenko/mvc-pack/issues"
   },
-  "homepage": "https://github.com/valerii-zinchenko/mvc-module#readme",
+  "homepage": "https://github.com/valerii-zinchenko/mvc-pack#readme",
   "keywords": [
     "javascript",
     "mvc",
