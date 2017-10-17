@@ -41,15 +41,15 @@
 
 		var components = [
 			'utils',
-			'AStateComponent',
+			'AModeComponent',
 			'AControl',
 			'AView',
 			'AFMVCModule',
-			'AFState',
+			'AFMode',
 			'DynamicView',
 			'ADecorator',
 			'MVCModule',
-			'State',
+			'Mode',
 			'StaticView',
 		];
 
@@ -59,13 +59,13 @@
 		window.utils = pkg.utils;
 		window.AControl = pkg.AControl;
 		window.AFMVCModule = pkg.AFMVCModule;
-		window.AFState = pkg.AFState;
-		window.AStateComponent = pkg.AStateComponent;
+		window.AFMode = pkg.AFMode;
+		window.AModeComponent = pkg.AModeComponent;
 		window.AView = pkg.AView;
 		window.DynamicView = pkg.DynamicView;
 		window.ADecorator = pkg.ADecorator;
 		window.MVCModule = pkg.MVCModule;
-		window.State = pkg.State;
+		window.Mode = pkg.Mode;
 		window.StaticView = pkg.StaticView;
 		<% } else { %>
 		['dep2vars'].concat(components).forEach(function(component) {

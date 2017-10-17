@@ -1,6 +1,6 @@
 'use strict';
 
-suite('AFState', function(){
+suite('AFMode', function(){
 	suite('incorrect input argument', function(){
 		[].concat(
 			[
@@ -58,7 +58,7 @@ suite('AFState', function(){
 		).forEach(function(testCase){
 			test(testCase.title, function(){
 				assert.throw(function(){
-					AFState(testCase.input);
+					AFMode(testCase.input);
 				}, Error, testCase.expected);
 			});
 		});
@@ -90,24 +90,24 @@ suite('AFState', function(){
 		].forEach(function(testCase){
 			test(JSON.stringify(testCase), function(){
 				assert.doesNotThrow(function(){
-					AFState(testCase);
+					AFMode(testCase);
 				});
 			});
 		});
 	});
 
-	suite('State builder. Integration tests with State', function(){
+	suite('Mode builder. Integration tests with Mode', function(){
 		setup(function(){
-			sinon.spy(AStateComponent.prototype, "connect");
+			sinon.spy(AModeComponent.prototype, "connect");
 		});
 		teardown(function(){
-			AStateComponent.prototype.connect.restore();
+			AModeComponent.prototype.connect.restore();
 		});
 
 		test('without model in input arguments', function(){
 			var result;
 			assert.throw(function(){
-				result = (AFState({View: AView}))();
+				result = (AFMode({View: AView}))();
 			}, Error, 'Incorrect type of the model. Expected: Object');
 		});
 
@@ -116,10 +116,10 @@ suite('AFState', function(){
 
 			var result;
 			assert.doesNotThrow(function(){
-				result = (AFState({View: AView}))(model);
+				result = (AFMode({View: AView}))(model);
 			});
 
-			assert.isNotNull(result.view, 'View component of the state was not setup');
+			assert.isNotNull(result.view, 'View component of the mode was not setup');
 			assert.equal(result.view.model, model, 'Model was incorrectly set');
 		});
 
@@ -128,14 +128,14 @@ suite('AFState', function(){
 
 			var result;
 			assert.doesNotThrow(function(){
-				result = (AFState({
+				result = (AFMode({
 					View: AView,
 					Control: AControl
 				}))(model);
 			});
 
-			assert.isNotNull(result.view, 'View component of the state was not setup');
-			assert.isNotNull(result.control, 'Control component of the state was not setup');
+			assert.isNotNull(result.view, 'View component of the mode was not setup');
+			assert.isNotNull(result.control, 'Control component of the mode was not setup');
 			assert.equal(result.control.model, model, 'Model was incorrectly set');
 		});
 
@@ -147,7 +147,7 @@ suite('AFState', function(){
 
 			var result;
 			assert.doesNotThrow(function(){
-				result = (AFState({
+				result = (AFMode({
 					View: AView,
 					Decorators: {
 						Deco: Deco,
@@ -156,17 +156,17 @@ suite('AFState', function(){
 				}))({});
 			});
 
-			assert.isTrue(Deco.prototype.initialize.calledOnce, 'Decorator should be created in the state builder');
+			assert.isTrue(Deco.prototype.initialize.calledOnce, 'Decorator should be created in the mode builder');
 			assert.instanceOf(result._decorators.Deco, Deco, 'Decorator was incorrectly set');
-			assert.isUndefined(result._decorators.incorrectDeco, 'Incorrect docarator should not be passed further to a state constructor');
+			assert.isUndefined(result._decorators.incorrectDeco, 'Incorrect docarator should not be passed further to a mode constructor');
 		});
 
-		test('state\'s configuration', function(){
+		test('mode\'s configuration', function(){
 			var config = {};
 
 			var result;
 			assert.doesNotThrow(function(){
-				result = (AFState({
+				result = (AFMode({
 					View: AView,
 					Control: AControl
 				}))({}, config);

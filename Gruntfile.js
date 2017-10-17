@@ -21,14 +21,14 @@ module.exports = function(grunt) {
 				src: [
 					'dep2vars',
 					'utils',
-					'AStateComponent',
+					'AModeComponent',
 					'AControl',
 					'AView',
 					'StaticView',
 					'DynamicView',
 					'ADecorator',
-					'State',
-					'AFState',
+					'Mode',
+					'AFMode',
 					'MVCModule',
 					'AFMVCModule'
 				].map(function(item) { return src + item + '.js'; }),
@@ -57,13 +57,13 @@ module.exports = function(grunt) {
 						'	return {\n' +
 						'		AControl: AControl,\n' +
 						'		AFMVCModule: AFMVCModule,\n' +
-						'		AFState: AFState,\n' +
-						'		AStateComponent: AStateComponent,\n' +
+						'		AFMode: AFMode,\n' +
+						'		AModeComponent: AModeComponent,\n' +
 						'		AView: AView,\n' +
 						'		DynamicView: DynamicView,\n' +
 						'		EventHandler: EventHandler,\n' +
 						'		MVCModule: MVCModule,\n' +
-						'		State: State,\n' +
+						'		Mode: Mode,\n' +
 						'		StaticView: StaticView,\n' +
 						'		utils: utils\n' +
 						'	};\n' +

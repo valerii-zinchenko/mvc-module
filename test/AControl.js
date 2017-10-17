@@ -3,7 +3,7 @@
 suite('AControl', function() {
 	suite('Constructor', function(){
 		test('Inheritance', function(){
-			assert.instanceOf(new AControl(), AStateComponent, 'AControl should be inherited from AStateComponent');
+			assert.instanceOf(new AControl(), AModeComponent, 'AControl should be inherited from AModeComponent');
 		});
 	});
 
@@ -11,11 +11,11 @@ suite('AControl', function() {
 		var aControl;
 		setup(function(){
 			aControl = new AControl({});
-			sinon.spy(AStateComponent.prototype, "destruct");
+			sinon.spy(AModeComponent.prototype, "destruct");
 		});
 		teardown(function(){
 			aControl = null;
-			AStateComponent.prototype.destruct.restore();
+			AModeComponent.prototype.destruct.restore();
 		});
 
 		suite('setView', function(){
@@ -64,7 +64,7 @@ suite('AControl', function() {
 			});
 
 			assert.isNull(aControl.view, 'destruct() should set view to null');
-			assert.isTrue(AStateComponent.prototype.destruct.calledOnce, 'Parent\'s destruct() should be called');
+			assert.isTrue(AModeComponent.prototype.destruct.calledOnce, 'Parent\'s destruct() should be called');
 		});
 	});
 });

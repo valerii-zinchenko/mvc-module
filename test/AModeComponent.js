@@ -1,10 +1,10 @@
 'use strict';
 
-suite('AStateComponent', function(){
+suite('AModeComponent', function(){
 	suite('Constructor', function() {
 		test('new', function(){
 			assert.doesNotThrow(function(){
-				new AStateComponent();
+				new AModeComponent();
 			});
 		});
 
@@ -13,7 +13,7 @@ suite('AStateComponent', function(){
 				[undefined, null, false, true, 0, 1, '', '1', [], function(){}].forEach(function(testCase) {
 					var result;
 					assert.doesNotThrow(function(){
-						result = new AStateComponent(testCase);
+						result = new AModeComponent(testCase);
 					});
 					assert.isNull(result.config, 'Configuration should not be set if it\'s type is incorrect');
 				});
@@ -24,7 +24,7 @@ suite('AStateComponent', function(){
 
 				var result;
 				assert.doesNotThrow(function(){
-					result = new AStateComponent(config);
+					result = new AModeComponent(config);
 				});
 				assert.equal(result.config, config, 'Component\'s config was not set');
 			});
@@ -32,35 +32,35 @@ suite('AStateComponent', function(){
 	});
 
 	suite('Methods', function(){
-		var aStateComponent;
+		var aModeComponent;
 		setup(function(){
-			aStateComponent = new AStateComponent();
+			aModeComponent = new AModeComponent();
 		});
 		teardown(function(){
-			aStateComponent = null;
+			aModeComponent = null;
 		});
 
 		test('connect', function(){
 			assert.doesNotThrow(function(){
-				aStateComponent.connect();
+				aModeComponent.connect();
 			});
 		});
 
 		test('destruct', function() {
 			assert.doesNotThrow(function(){
-				aStateComponent.destruct();
+				aModeComponent.destruct();
 			});
 
-			assert.isNull(aStateComponent.model, 'destruct() should set model to null');
-			assert.isNull(aStateComponent.config, 'destruct() should set config to null');
+			assert.isNull(aModeComponent.model, 'destruct() should set model to null');
+			assert.isNull(aModeComponent.config, 'destruct() should set config to null');
 		});
 
 		suite('setModel', function(){
 			test('incorrect typed', function() {
 				[undefined, null, false, true, 0, 1, '', '1', [], function(){}].forEach(function(tesCase) {
 					assert.throw(function(){
-						aStateComponent.setModel(tesCase);
-					}, Error, 'Model for the state is not defined');
+						aModeComponent.setModel(tesCase);
+					}, Error, 'Model for the mode is not defined');
 				});
 			});
 
@@ -68,9 +68,9 @@ suite('AStateComponent', function(){
 				var model = {};
 
 				assert.doesNotThrow(function(){
-					aStateComponent.setModel(model);
+					aModeComponent.setModel(model);
 				});
-				assert.equal(aStateComponent.model, model, 'Model object was incorreclty set');
+				assert.equal(aModeComponent.model, model, 'Model object was incorreclty set');
 			});
 		});
 

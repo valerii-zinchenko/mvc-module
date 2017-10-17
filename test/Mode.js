@@ -1,13 +1,13 @@
 'use strict';
 
-suite('State', function(){
+suite('Mode', function(){
 	suite('Constructor', function(){
 		suite('incorrect input properties', function(){
 			[].concat(
 				[undefined, null, 0, 1, false, true, '', 'str', [], function(){}].map(function(input){
 					return {
 						input: input,
-						exception: 'Incorrect type of the state\'s properties. Expected: Object'
+						exception: 'Incorrect type of the mode\'s properties. Expected: Object'
 					};
 				}),
 
@@ -30,7 +30,7 @@ suite('State', function(){
 			).forEach(function(testCase){
 				test('input: ' + JSON.stringify(testCase.input), function(){
 					assert.throw(function(){
-						new State(testCase.input);
+						new Mode(testCase.input);
 					}, Error, testCase.exception);
 				});
 			});
@@ -42,7 +42,7 @@ suite('State', function(){
 					test('input: ' + testCase, function(){
 						var result;
 						assert.doesNotThrow(function(){
-							result = new State({
+							result = new Mode({
 								model: {},
 								view: new AView({}),
 								control: testCase
@@ -59,7 +59,7 @@ suite('State', function(){
 					test('input: ' + testCase, function(){
 						var result;
 						assert.doesNotThrow(function(){
-							result = new State({
+							result = new Mode({
 								model: {},
 								view: new AView({}),
 								decorators: testCase
@@ -74,10 +74,10 @@ suite('State', function(){
 
 		suite('whole successful constructing', function(){
 			setup(function(){
-				sinon.spy(State.prototype, 'connect');
+				sinon.spy(Mode.prototype, 'connect');
 			});
 			teardown(function(){
-				State.prototype.connect.restore();
+				Mode.prototype.connect.restore();
 			});
 
 			test('methods\'s chain', function(){
@@ -92,7 +92,7 @@ suite('State', function(){
 
 				var result;
 				assert.doesNotThrow(function(){
-					result = new State({
+					result = new Mode({
 						model: model,
 						view: view,
 						control: control,
@@ -112,9 +112,9 @@ suite('State', function(){
 	});
 
 	suite('Methods', function(){
-		var state;
+		var mode;
 		setup(function(){
-			state = new State({
+			mode = new Mode({
 				model: {},
 				view: new AView(),
 				control: new AControl(),
@@ -125,83 +125,83 @@ suite('State', function(){
 			});
 		});
 		teardown(function(){
-			state = null;
+			mode = null;
 		});
 
 		suite('connect', function(){
 			setup(function(){
-				state._isConnected = false;
+				mode._isConnected = false;
 
-				sinon.spy(state._view, 'setModel');
-				sinon.spy(state._view, 'connect');
-				sinon.spy(state._view, 'setControl');
-				sinon.spy(state._view, 'render');
+				sinon.spy(mode._view, 'setModel');
+				sinon.spy(mode._view, 'connect');
+				sinon.spy(mode._view, 'setControl');
+				sinon.spy(mode._view, 'render');
 				sinon.spy(AControl.prototype, 'setModel');
 				sinon.spy(AControl.prototype, 'setView');
 				sinon.spy(AControl.prototype, 'connect');
-				sinon.spy(state._decorators.deco0, 'setModel');
-				sinon.spy(state._decorators.deco0, 'render');
-				sinon.spy(state._decorators.deco1, 'setModel');
-				sinon.spy(state._decorators.deco1, 'render');
+				sinon.spy(mode._decorators.deco0, 'setModel');
+				sinon.spy(mode._decorators.deco0, 'render');
+				sinon.spy(mode._decorators.deco1, 'setModel');
+				sinon.spy(mode._decorators.deco1, 'render');
 			});
 			teardown(function(){
-				state._view.setModel.restore();
-				state._view.connect.restore();
-				state._view.setControl.restore();
-				state._view.render.restore();
+				mode._view.setModel.restore();
+				mode._view.connect.restore();
+				mode._view.setControl.restore();
+				mode._view.render.restore();
 				AControl.prototype.setModel.restore();
 				AControl.prototype.setView.restore();
 				AControl.prototype.connect.restore();
-				state._decorators.deco0.setModel.restore();
-				state._decorators.deco0.render.restore();
-				state._decorators.deco1.setModel.restore();
-				state._decorators.deco1.render.restore();
+				mode._decorators.deco0.setModel.restore();
+				mode._decorators.deco0.render.restore();
+				mode._decorators.deco1.setModel.restore();
+				mode._decorators.deco1.render.restore();
 			});
 
 			test('without control', function(){
-				state.control = null;
+				mode.control = null;
 				assert.doesNotThrow(function(){
-					state.connect();
-					state.connect();
+					mode.connect();
+					mode.connect();
 				});
 
-				assert.isTrue(state._view.setModel.withArgs(state.model).calledOnce, 'Model should be set to the view');
-				assert.isTrue(state._view.connect.calledOnce, 'State components was not connected to the view');
-				assert.isFalse(state._view.setControl.called, 'Control component should not be set when the state hasn\'t  control component');
+				assert.isTrue(mode._view.setModel.withArgs(mode.model).calledOnce, 'Model should be set to the view');
+				assert.isTrue(mode._view.connect.calledOnce, 'Mode components was not connected to the view');
+				assert.isFalse(mode._view.setControl.called, 'Control component should not be set when the mode hasn\'t  control component');
 
-				assert.isTrue(state._view.render.calledAfter(state._view.connect), 'View should be rendered after the connecting of all states\' components');
+				assert.isTrue(mode._view.render.calledAfter(mode._view.connect), 'View should be rendered after the connecting of all modes\' components');
 
 				var decorator;
 				for (var key in this._decorators) {
-					decorator = state._decorators[key];
-					assert.isTrue(decorator.setModel.withArgs(state.model).calledOnce, 'Model should be set into the decorator ' + key);
+					decorator = mode._decorators[key];
+					assert.isTrue(decorator.setModel.withArgs(mode.model).calledOnce, 'Model should be set into the decorator ' + key);
 					assert.isTrue(decorator.render.calledAfter(decorator.setModel), 'Decorator "' + key + '" should be rendered after the model will be set');
 				}
 			});
 
 			test('with control', function(){
 				assert.doesNotThrow(function(){
-					state.connect();
-					state.connect();
+					mode.connect();
+					mode.connect();
 				});
 
-				assert.isTrue(state._view.setModel.withArgs(state.model).calledOnce, 'Model should be set to the view');
-				assert.isTrue(state._view.setControl.calledOnce, 'Control component was not be set');
-				assert.isTrue(state._view.connect.calledOnce, 'State components was not connected to the view');
-				assert.isTrue(state._view.setModel.calledBefore(state._view.setControl), 'Model should be set first');
-				assert.isTrue(state._view.connect.calledAfter(state._view.setControl), 'Control should be set to the view before connect()');
-				assert.isTrue(state._view.render.calledAfter(state._view.connect), 'View should be rendered after the connecting of all states\' components');
+				assert.isTrue(mode._view.setModel.withArgs(mode.model).calledOnce, 'Model should be set to the view');
+				assert.isTrue(mode._view.setControl.calledOnce, 'Control component was not be set');
+				assert.isTrue(mode._view.connect.calledOnce, 'Mode components was not connected to the view');
+				assert.isTrue(mode._view.setModel.calledBefore(mode._view.setControl), 'Model should be set first');
+				assert.isTrue(mode._view.connect.calledAfter(mode._view.setControl), 'Control should be set to the view before connect()');
+				assert.isTrue(mode._view.render.calledAfter(mode._view.connect), 'View should be rendered after the connecting of all modes\' components');
 
-				assert.isTrue(state.control.setModel.withArgs(state.model).calledOnce, 'Model should be set to the control');
-				assert.isTrue(state.control.setView.calledOnce, 'Control component was not be set');
-				assert.isTrue(state.control.connect.calledOnce, 'State components was not connected to the view');
-				assert.isTrue(state.control.setModel.calledBefore(state.control.setView), 'Model should be set first');
-				assert.isTrue(state.control.connect.calledAfter(state.control.setView), 'View should be set to the ontrol before connect()');
+				assert.isTrue(mode.control.setModel.withArgs(mode.model).calledOnce, 'Model should be set to the control');
+				assert.isTrue(mode.control.setView.calledOnce, 'Control component was not be set');
+				assert.isTrue(mode.control.connect.calledOnce, 'Mode components was not connected to the view');
+				assert.isTrue(mode.control.setModel.calledBefore(mode.control.setView), 'Model should be set first');
+				assert.isTrue(mode.control.connect.calledAfter(mode.control.setView), 'View should be set to the ontrol before connect()');
 
 				var decorator;
 				for (var key in this._decorators) {
-					decorator = state._decorators[key];
-					assert.isTrue(decorator.setModel.withArgs(state.model).calledOnce, 'Model should be set into the decorator ' + key);
+					decorator = mode._decorators[key];
+					assert.isTrue(decorator.setModel.withArgs(mode.model).calledOnce, 'Model should be set into the decorator ' + key);
 					assert.isTrue(decorator.render.calledAfter(decorator.setModel), 'Decorator "' + key + '" should be rendered after the model will be set');
 				}
 			});
@@ -218,7 +218,7 @@ suite('State', function(){
 
 				test('decorator does not exist', function(){
 					assert.doesNotThrow(function(){
-						state.decorateWith('nothing');
+						mode.decorateWith('nothing');
 					});
 
 					assert.isFalse(ADecorator.prototype.setComponent.called, '"setComponent" should not be called at all, if decorator does not registered');
@@ -226,20 +226,20 @@ suite('State', function(){
 
 				test('one decorator', function(){
 					assert.doesNotThrow(function(){
-						state.decorateWith('deco0');
+						mode.decorateWith('deco0');
 					});
 
 					assert.isTrue(ADecorator.prototype.setComponent.calledOnce, 'Decorator should accept some decorated view only once');
-					assert.isTrue(ADecorator.prototype.setComponent.withArgs(state._view).called, 'Decorator should accept initial state view only once');
+					assert.isTrue(ADecorator.prototype.setComponent.withArgs(mode._view).called, 'Decorator should accept initial mode view only once');
 				});
 
 				test('two decorators', function(){
 					assert.doesNotThrow(function(){
-						state.decorateWith(['deco0', 'deco1']);
+						mode.decorateWith(['deco0', 'deco1']);
 					});
 
 					assert.isTrue(ADecorator.prototype.setComponent.calledTwice, 'Decorator should accept some decorated view only once');
-					assert.isTrue(state._decorators.deco0.setComponent.withArgs(state._view).calledBefore(state._decorators.deco1.setComponent.withArgs(state._decorators.deco0)), 'Decorators were applied in the incorrect sequesnce');
+					assert.isTrue(mode._decorators.deco0.setComponent.withArgs(mode._view).calledBefore(mode._decorators.deco1.setComponent.withArgs(mode._decorators.deco0)), 'Decorators were applied in the incorrect sequesnce');
 				});
 			});
 
@@ -248,10 +248,10 @@ suite('State', function(){
 					[undefined, null, false, true, 0, 1, {}, function(){}, '', []].forEach(function(input){
 						test('input: ' + JSON.stringify(input), function(){
 							assert.doesNotThrow(function(){
-								state.decorateWith(input);
+								mode.decorateWith(input);
 							});
 
-							assert.equal(state.view, state._view, 'Incorrect final reference was set to the this.view');
+							assert.equal(mode.view, mode._view, 'Incorrect final reference was set to the this.view');
 						});
 					});
 				});
@@ -291,10 +291,10 @@ suite('State', function(){
 					].forEach(function(testCase){
 						test(JSON.stringify(testCase.decorators), function(){
 							assert.doesNotThrow(function(){
-								state.decorateWith(testCase.decorators);
+								mode.decorateWith(testCase.decorators);
 							});
 
-							assert.equal(state.view, state._decorators[testCase.expected], 'Incorrect final reference was set to the this.view');
+							assert.equal(mode.view, mode._decorators[testCase.expected], 'Incorrect final reference was set to the this.view');
 						});
 					});
 				});

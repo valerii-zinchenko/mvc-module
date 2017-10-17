@@ -25,6 +25,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-uglify": "^2.0.0",
@@ -34,6 +35,7 @@
     "grunt-template": "^1.0.0",
     "grunt-wrap": "^0.3.0",
     "istanbul": "^0.4.5",
+    "jsdoc-inheritance-diagram": "^1.0.0",
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.0.2",
     "sinon": "^1.17.5"
@@ -45,7 +47,7 @@
   "keywords": [
     "javascript",
     "mvc",
-    "state",
+    "mode",
     "patterns",
     "module",
     "factory",
