@@ -2,7 +2,7 @@
   "name": "mvc-pack",
   "version": "0.9.0",
   "description": "Package of combined patterns to build rich MVC modules",
-  "main": "lib/mvc-pack.js",
+  "main": "dest/mvc-pack.js",
   "author": "Valerii Zinchenko",
   "license": "MIT",
   "repository": {
@@ -10,7 +10,8 @@
     "url": "git+https://github.com/valerii-zinchenko/mvc-pack.git"
   },
   "scripts": {
-    "preversion": "grunt test",
+    "test": "grunt test",
+    "preversion": "npm test",
     "prepublish": "grunt build"
   },
   "directories": {
