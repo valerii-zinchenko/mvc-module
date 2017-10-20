@@ -12,7 +12,7 @@
   "scripts": {
     "test": "grunt test",
     "preversion": "npm test",
-    "prepublish": "grunt build"
+    "prepublishOnly": "grunt build"
   },
   "directories": {
     "dest": "dest",
