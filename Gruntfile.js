@@ -50,9 +50,9 @@ module.exports = function(grunt) {
 						'	} else if(typeof module === "object" && module.exports) {\n' +
 						'		module.exports = factory.apply(null, [require("class-wrapper")]);\n' +
 						'	} else {\n' +
-						'		root["<%= pkg.name %>"] = factory.apply(null, [classWrapper]);\n' +
+						'		root["<%= pkg.name %>"] = factory.apply(null, [root["class-wrapper"]]);\n' +
 						'	}\n' +
-						'})(this, function(classWrapper) {',
+						'})(this, function(ClassWrapper) {',
 						// code will be placed right here
 						'	return {\n' +
 						'		AControl: AControl,\n' +
@@ -61,7 +61,6 @@ module.exports = function(grunt) {
 						'		AModeComponent: AModeComponent,\n' +
 						'		AView: AView,\n' +
 						'		DynamicView: DynamicView,\n' +
-						'		EventHandler: EventHandler,\n' +
 						'		MVCModule: MVCModule,\n' +
 						'		Mode: Mode,\n' +
 						'		StaticView: StaticView,\n' +
