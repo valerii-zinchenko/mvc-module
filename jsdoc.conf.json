@@ -5,7 +5,6 @@
 	],
 	"opts": {
 		"destination": "doc",
-		"readme": "README.md",
 		"private": true,
 		"inheritance-diagram": {
 			"node": {
