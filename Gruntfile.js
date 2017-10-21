@@ -44,15 +44,15 @@ module.exports = function(grunt) {
 					wrapper: [
 						'(function (root, factory) {\n' +
 						'	if(typeof define === "function" && define.amd) {\n' +
-						'		define(["class-wrapper"], function() {\n' +
+						'		define(["class-wrapper", "lodash"], function() {\n' +
 						'			return factory.apply(null, arguments);\n' +
 						'		});\n' +
 						'	} else if(typeof module === "object" && module.exports) {\n' +
-						'		module.exports = factory.apply(null, [require("class-wrapper")]);\n' +
+						'		module.exports = factory.apply(null, [require("class-wrapper"), require("lodash")]);\n' +
 						'	} else {\n' +
-						'		root["<%= pkg.name %>"] = factory.apply(null, [root["class-wrapper"]]);\n' +
+						'		root["<%= pkg.name %>"] = factory.apply(null, [root["class-wrapper"], root["lodash"]]);\n' +
 						'	}\n' +
-						'})(this, function(ClassWrapper) {',
+						'})(this, function(ClassWrapper, _) {',
 						// code will be placed right here
 						'	return {\n' +
 						'		AControl: AControl,\n' +
