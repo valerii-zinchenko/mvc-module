@@ -1,6 +1,6 @@
 {
   "name": "mvc-pack",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "description": "Package of combined patterns to build rich MVC modules",
   "main": "dest/mvc-pack.js",
   "author": "Valerii Zinchenko",
