@@ -46,7 +46,7 @@ suite('AView', function() {
 		});
 
 		test('desctuct', function(){
-			aView.$el = document.createElement('div');
+			aView.element = document.createElement('div');
 			aView.setControl(new AControl({}));
 			aView.destruct();
 
@@ -56,15 +56,6 @@ suite('AView', function() {
 
 		['render', 'update', '_initElements', '_attachEvents'].forEach(function(method) {
 			test(method + '()', function() {
-				assert.doesNotThrow(function(){
-					aView[method]();
-				});
-			});
-		});
-
-		['show', 'hide'].forEach(function(method) {
-			test(method + '()', function() {
-				aView.$el = document.createElement('div');
 				assert.doesNotThrow(function(){
 					aView[method]();
 				});

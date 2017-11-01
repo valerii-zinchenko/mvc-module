@@ -43,5 +43,13 @@ suite('StaticView', function(){
 				assert.isTrue(view._attachEvents.calledAfter(view._initElements), 'Helper methods were called in incorrect order by rendering');
 			});
 		});
+
+		['show', 'hide'].forEach(function(method) {
+			test(method + '()', function() {
+				view.element = document.createElement('div');
+
+				view[method]();
+			});
+		});
 	});
 });
