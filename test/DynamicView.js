@@ -16,10 +16,38 @@ suite('DynamicView', function(){
 			view = null;
 		});
 
-		test('_processTemplate', function(){
-			view.model = {};
-			assert.doesNotThrow(function(){
-				view._processTemplate();
+		suite('_processTemplate', function() {
+			setup(function(){
+				view.model = {};
+			});
+			teardown(function(){
+				view.model = null;
+			});
+
+			test('no exception', function(){
+				view.model = {};
+				assert.doesNotThrow(function(){
+					view._processTemplate();
+				});
+			});
+
+			suite('template processing', function(){
+				var stubTemplate;
+				setup(function(){
+					stubTemplate = sinon.stub(_, 'template');
+				});
+				teardown(function(){
+					_.template.restore();
+				});
+
+				test('template context should be the view itself', function(){
+					var fake = sinon.spy();
+					stubTemplate.returns(fake);
+
+					view._processTemplate();
+
+					assert.isTrue(fake.calledWith(view));
+				});
 			});
 		});
 
