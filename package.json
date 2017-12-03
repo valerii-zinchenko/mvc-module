@@ -11,6 +11,8 @@
   },
   "scripts": {
     "test": "grunt test",
+    "coverage": "grunt coverage",
+    "doc": "grunt doc",
     "preversion": "npm test",
     "prepublishOnly": "grunt build"
   },
@@ -35,9 +37,10 @@
     "grunt-jsdoc": "^2.1.0",
     "grunt-mocha-phantom-istanbul": "^0.2.1",
     "grunt-template": "^1.0.0",
-    "grunt-wrap": "^0.3.0",
+    "grunt-umd": "^2.4.0",
     "istanbul": "^0.4.5",
     "jsdoc-inheritance-diagram": "^1.0.0",
+    "libumd": "github:valerii-zinchenko/libumd",
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^4.0.1",
     "sinon": "^4.1.2"

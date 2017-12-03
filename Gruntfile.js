@@ -5,9 +5,9 @@ module.exports = function(grunt) {
 
 	var banner = '// <%= pkg.description %>\n'+
 				 '// v<%= pkg.version %>\n' +
-				 '// Copyright (c) 2016-2017 <%= pkg.author %>\n' +
+				 '// Copyright (c) 2016-<%= (new Date()).getFullYear() %> <%= pkg.author %>\n' +
 				 '// Licensed under <%= pkg.license %> (http://valerii-zinchenko.github.io/<%= pkg.name %>/blob/master/LICENSE.txt)\n' +
-				 '// All source files are available at: http://github.com/<%= pkg.repository %>\n';
+				 '// All source files are available at <%= pkg.repository.url.slice(4, -4) %>\n';
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -30,44 +30,30 @@ module.exports = function(grunt) {
 					'Mode',
 					'AFMode',
 					'MVCModule',
-					'AFMVCModule'
+					'AFMVCModule',
+					'index'
 				].map(function(item) { return src + item + '.js'; }),
 				dest: '<%= pkg.directories.dest %>/<%= pkg.name %>.js'
 			}
 		},
 
-		wrap: {
+		umd: {
 			pkg: {
-				src: '<%= pkg.directories.dest %>/<%= pkg.name %>.js',
-				dest: '<%= pkg.directories.dest %>/<%= pkg.name %>.js',
 				options: {
-					wrapper: [
-						'(function (root, factory) {\n' +
-						'	if(typeof define === "function" && define.amd) {\n' +
-						'		define(["class-wrapper", "lodash"], function() {\n' +
-						'			return factory.apply(null, arguments);\n' +
-						'		});\n' +
-						'	} else if(typeof module === "object" && module.exports) {\n' +
-						'		module.exports = factory.apply(null, [require("class-wrapper"), require("lodash")]);\n' +
-						'	} else {\n' +
-						'		root["<%= pkg.name %>"] = factory.apply(null, [root["class-wrapper"], root["lodash"]]);\n' +
-						'	}\n' +
-						'})(this, function(ClassWrapper, _) {',
-						// code will be placed right here
-						'	return {\n' +
-						'		AControl: AControl,\n' +
-						'		AFMVCModule: AFMVCModule,\n' +
-						'		AFMode: AFMode,\n' +
-						'		AModeComponent: AModeComponent,\n' +
-						'		AView: AView,\n' +
-						'		DynamicView: DynamicView,\n' +
-						'		MVCModule: MVCModule,\n' +
-						'		Mode: Mode,\n' +
-						'		StaticView: StaticView,\n' +
-						'		utils: utils\n' +
-						'	};\n' +
-						'});'
-					]
+					src: '<%= pkg.directories.dest %>/<%= pkg.name %>.js',
+					dest: '<%= pkg.directories.dest %>/<%= pkg.name %>.js',
+					objectToExport: 'MVCPack',
+					globalAlias: 'mvc-pack',
+					deps: {
+						'default': [
+							{'class-wrapper': 'ClassWrapper'},
+							{'lodash': '_'}
+						],
+						global: [
+							'class-wrapper',
+							'_'
+						]
+					}
 				}
 			}
 		},
@@ -106,7 +92,7 @@ module.exports = function(grunt) {
 					'<%= pkg.directories.test %>/index.html': ['<%= pkg.directories.test %>/index.tpl.html']
 				}
 			},
-			'prod-test': {
+			'test-prod': {
 				options: {
 					data: {
 						isPROD: true
@@ -195,8 +181,9 @@ module.exports = function(grunt) {
 
 
 	[
-		['build', ['clean:build', 'concat', 'wrap', 'uglify', 'template:test']],
+		['build', ['clean:build', 'concat', 'umd', 'uglify']],
 		['test', ['template:test', 'mocha:test']],
+		['test-prod', ['template:test-prod', 'mocha:test']],
 		['coverage', ['prepareForCoverage', 'template:coverage', 'mocha:coverage', 'clean:coverage', 'template:test']],
 		['doc', ['jsdoc']]
 	].forEach(function(registry){
