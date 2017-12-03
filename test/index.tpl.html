@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Test MVCModule</title>
+	<title>Test MVC Pack</title>
 
 	<link rel="stylesheet" href="../node_modules/mocha/mocha.css" type="text/css" media="screen" title="no title" charset="utf-8">
 </head>
@@ -22,8 +22,9 @@
 		var ClassWrapper = window['class-wrapper'];
 	</script>
 	<% if (isPROD) { %>
-	<script src="../dest/mvcmodule.min.js"></script>
+	<script src="../dest/mvc-pack.min.js"></script>
 	<% } %>
+	<script src="../lib/dep2vars.js"></script>
 	<script type="text/javascript" charset="utf-8">
 		function appendScript(src) {
 			var script = document.createElement('script');
@@ -55,22 +56,13 @@
 			'StaticView',
 		];
 
-		// add lib files
 		<% if (isPROD) { %>
-		var pkg = window['MVCModule'];
-		window.utils = pkg.utils;
-		window.AControl = pkg.AControl;
-		window.AFMVCModule = pkg.AFMVCModule;
-		window.AFMode = pkg.AFMode;
-		window.AModeComponent = pkg.AModeComponent;
-		window.AView = pkg.AView;
-		window.DynamicView = pkg.DynamicView;
-		window.ADecorator = pkg.ADecorator;
-		window.MVCModule = pkg.MVCModule;
-		window.Mode = pkg.Mode;
-		window.StaticView = pkg.StaticView;
+		components.forEach(function(component) {
+			window[component] = window['mvc-pack'][component];
+		});
 		<% } else { %>
-		['dep2vars'].concat(components).forEach(function(component) {
+		// add lib files
+		components.forEach(function(component) {
 			appendScript('<%= jsFolder %>' + component + '.js');
 		});
 		<% } %>

@@ -7,18 +7,18 @@ suite('StaticView', function(){
 		});
 
 		test('initialize', function(){
-			new StaticView({});
+			new StaticView();
 		});
 
 		test('is singleton', function(){
-			assert.equal(new StaticView({}), new StaticView({}), 'StaticView should behave as singleton');
+			assert.equal(new StaticView(), new StaticView(), 'StaticView should behave as singleton');
 		});
 	});
 
 	suite('Methods', function(){
 		var view;
 		setup(function() {
-			view = new StaticView({});
+			view = new StaticView();
 		});
 		teardown(function(){
 			view = null;
@@ -50,6 +50,30 @@ suite('StaticView', function(){
 
 				view[method]();
 			});
+		});
+	});
+
+	suite('Destruction', function(){
+		setup(function(){
+			sinon.spy(AView.prototype, 'destruct');
+			sinon.spy(Element.prototype, 'remove');
+		});
+		teardown(function(){
+			StaticView.instance = null;
+
+			AView.prototype.destruct.restore();
+			Element.prototype.remove.restore();
+		});
+
+		test('the element should be removed and then parent\s method should be called', function(){
+			var view = new StaticView();
+			view.element = document.createElement('div');
+			view.render();
+			view.destruct();
+
+			assert.isTrue(Element.prototype.remove.calledOnce);
+			assert.isTrue(AView.prototype.destruct.calledOnce);
+			assert.isTrue(AView.prototype.destruct.calledAfter(Element.prototype.remove));
 		});
 	});
 });

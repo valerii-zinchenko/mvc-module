@@ -26,6 +26,32 @@ suite('Mode', function(){
 						},
 						exception: 'View should be inherited from AView'
 					};
+				}),
+
+				[undefined, null, 0, 1, false, true, '', 'str', [], function(){}].map(function(input){
+					var model = {};
+					return {
+						input: {
+							model: model,
+							view: new AView(model),
+							decorators: {
+								deco: input
+							}
+						},
+						exception: 'Decorator "deco" should be inherited from ADecorator'
+					};
+				}),
+
+				[1, true, 'str', [], function(){}, {}].map(function(input){
+					var model = {};
+					return {
+						input: {
+							model: model,
+							view: new AView(model),
+							control: input
+						},
+						exception: 'Control should be inherited from AControl'
+					};
 				})
 			).forEach(function(testCase){
 				test('input: ' + JSON.stringify(testCase.input), function(){
@@ -38,7 +64,7 @@ suite('Mode', function(){
 
 		suite('skip some input property', function(){
 			suite('incompatible control object', function(){
-				[undefined, null, 0, 1, false, true, '', 'str', [], function(){}, {}].forEach(function(testCase){
+				[undefined, null, 0, false, ''].forEach(function(testCase){
 					test('input: ' + testCase, function(){
 						var result;
 						assert.doesNotThrow(function(){
@@ -85,9 +111,8 @@ suite('Mode', function(){
 				var view = new AView();
 				var control = new AControl();
 				var decorators = {
-					notfn: {},
-					incomp: function(){},
-					deco: new (Class(ADecorator, null, {}))
+					deco: new (Class(ADecorator, null, {})),
+					anotherdeco: new (Class(ADecorator, null, {}))
 				};
 
 				var result;

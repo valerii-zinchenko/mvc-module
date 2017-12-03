@@ -26,3 +26,7 @@ if (!Function.prototype.bind) {
 			return fBound;
 	};
 }
+
+
+// Old PhantomJS (1.9.8) does not have the implementation for Element.prtotype.remove, so just define a dummy function for it, to be able to run tests from command line
+Element.prototype.remove = Element.prototype.remove || function() {};

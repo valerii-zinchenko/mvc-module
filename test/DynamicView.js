@@ -2,15 +2,15 @@
 
 suite('DynamicView', function(){
 	suite('Constructor', function(){
-		test('is singleton', function(){
-			assert.notEqual(new DynamicView({}), new DynamicView({}), 'DynamicView should not behave as singleton');
+		test('is not a singleton', function(){
+			assert.notEqual(new DynamicView(), new DynamicView(), 'DynamicView should not behave as singleton');
 		});
 	});
 
 	suite('Methods', function(){
 		var view;
 		setup(function(){
-			view = new DynamicView({});
+			view = new DynamicView();
 		});
 		teardown(function(){
 			view = null;
@@ -72,6 +72,36 @@ suite('DynamicView', function(){
 				assert.isTrue(view._initElements.calledAfter(view._processTemplate), 'Elements should be initializing after processing template');
 				assert.isTrue(view._attachEvents.calledAfter(view._initElements), 'Events should be attached after initializing of elements');
 			});
+		});
+	});
+
+	suite('Destruction', function(){
+		setup(function(){
+			sinon.spy(AView.prototype, 'destruct');
+			sinon.spy(Element.prototype, 'remove');
+		});
+		teardown(function(){
+			AView.prototype.destruct.restore();
+			Element.prototype.remove.restore();
+		});
+
+		test('parent\'s method should be called', function(){
+			var view = new DynamicView();
+			view.destruct();
+
+			assert.isTrue(AView.prototype.destruct.calledOnce);
+		});
+
+		test('all elements sould be removed and then parent\s method should be called', function(){
+			var view = new (Class(DynamicView, null, {
+				template: '<div></div><div></div>'
+			}))();
+			view.render();
+			view.destruct();
+
+			assert.isTrue(Element.prototype.remove.calledTwice);
+			assert.isTrue(AView.prototype.destruct.calledOnce);
+			assert.isTrue(AView.prototype.destruct.calledAfter(Element.prototype.remove));
 		});
 	});
 });

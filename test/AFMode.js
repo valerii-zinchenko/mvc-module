@@ -44,10 +44,51 @@ suite('AFMode', function(){
 				1,
 				'str',
 				[],
+				function(){}
+			].map(function(input){
+				return {
+					title: 'type of a Decorators: ' + Object.prototype.toString(input) + ' with a value: ' + input,
+					input: {
+						View: function(){},
+						Decorators: input
+					},
+					expected: 'Incorrect type of map of decorators. Expected: Object. Where key is a decorator name, and value is a decorator constructor'
+				};
+			}),
+
+			[
+				undefined,
+				null,
+				false,
+				true,
+				0,
+				1,
+				'',
+				'str',
+				[],
 				{}
 			].map(function(input){
 				return {
-					title: 'type of a Controller: ' + Object.prototype.toString(input) + ' with a value: ' + input,
+					title: 'type of a Decorator constructor: ' + Object.prototype.toString(input) + ' with a value: ' + input,
+					input: {
+						View: function(){},
+						Decorators: {
+							Deco: input
+						}
+					},
+					expected: 'Incorrect type of a decorator\'s constructor "Deco". Expected: Function'
+				};
+			}),
+
+			[
+				true,
+				1,
+				'str',
+				[],
+				{}
+			].map(function(input){
+				return {
+					title: 'type of a Control: ' + Object.prototype.toString(input) + ' with a value: ' + input,
 					input: {
 						View: function(){},
 						Control: input
@@ -76,8 +117,7 @@ suite('AFMode', function(){
 			{
 				View: function(){},
 				Decorators: {
-					Deco: function(){},
-					notdeco: '123'
+					Deco: function(){}
 				}
 			},
 			{
@@ -148,8 +188,7 @@ suite('AFMode', function(){
 			var result = (AFMode({
 				View: AView,
 				Decorators: {
-					Deco: Deco,
-					incorrectDeco: incorrectDeco
+					Deco: Deco
 				}
 			}))({});
 
