@@ -68,77 +68,50 @@ suite('MVCModule', function() {
 	suite('Methods', function() {
 		var uut;
 		setup(function() {
-			uut = new MVCModule({}, {
-				mode: (AFMode({
-					View: AView,
-					Decorators: {
-						deco: ADecorator
-					}
-				}))({})
-			}, {
-				someEnv: 'mode'
-			});
+			uut = new MVCModule(
+				{},
+				{
+					mode: (AFMode({
+						View: AView,
+						Decorators: {
+							deco: ADecorator
+						}
+					}))({})
+				},
+				{
+					someEnv: 'mode'
+				}
+			);
 		});
 		teardown(function() {
 			uut = null;
 		});
 
 		suite('getMode', function() {
-			test('Undefined mode', function() {
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getMode('str');
-				});
+			test('null should be returned if requested mode is not found', function() {
+				var result = uut.getMode('str');
 
-				assert.isNull(result, 'Null should be returned if desired mode is not exist');
+				assert.isNull(result);
 			});
 
-			test('existing mode', function(){
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getMode('mode');
-				});
+			test('mode object should be returned for the existing mapping', function(){
+				var result = uut.getMode('mode');
 
-				assert.equal(result, uut.modes.mode, 'Incorrect existing mode was returned');
-			});
-
-			test('with decorator', function(){
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getMode('mode', 'deco');
-				});
-
-				assert.equal(result.view, uut.modes.mode._decorators.deco, 'Afeter decorating the "view" should point to the decorator object');
+				assert.equal(result, uut.modes.mode);
 			});
 		});
 
 		suite('getModeFor', function(){
-			test('not registered mapping', function(){
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getModeFor('eeeeenv');
-				});
+			test('null should be returned if mapping to a mode is not found', function(){
+				var result = uut.getModeFor('eeeeenv');
 
-				assert.isNull(result, 'Null should be returned, because it is not defined what mode should be used for a specific environment');
+				assert.isNull(result);
 			});
 
-			test('registered mapping', function(){
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getModeFor('someEnv');
-				});
+			test('mode should be returned for the existing mapping', function(){
+				var result = uut.getModeFor('someEnv');
 
-				assert.equal(result, uut.modes.mode, 'Incorrect mode was returned');
-			});
-
-			test('registered mapping with a decorator', function(){
-				var result;
-				assert.doesNotThrow(function(){
-					result = uut.getModeFor('someEnv', 'deco');
-				});
-
-				assert.equal(result, uut.modes.mode, 'Incorrect mode was returned');
-				assert.equal(result.view, uut.modes.mode._decorators.deco, 'Mode was not decorated');
+				assert.equal(result, uut.modes.mode);
 			});
 		});
 	});

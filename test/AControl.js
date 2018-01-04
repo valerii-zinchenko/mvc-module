@@ -5,6 +5,14 @@ suite('AControl', function() {
 		test('Inheritance', function(){
 			assert.instanceOf(new AControl(), AModeComponent, 'AControl should be inherited from AModeComponent');
 		});
+
+		test('Mixing of Observer', function() {
+			var c = new AControl();
+
+			assert.equal(c.listen, Observer.prototype.listen);
+			assert.equal(c.trigger, Observer.prototype.trigger);
+			assert.equal(c.removeListener, Observer.prototype.removeListener);
+		});
 	});
 
 	suite('Methods', function(){
@@ -18,52 +26,11 @@ suite('AControl', function() {
 			AModeComponent.prototype.destruct.restore();
 		});
 
-		suite('setView', function(){
-			suite('incorrect view instance', function(){
-				[].concat(
-					[
-						undefined,
-						null,
-						false,
-						true,
-						0,
-						1,
-						'',
-						'1',
-						[],
-						{},
-						function(){}
-					].map(function(input){
-						return {
-							title: 'when type of input: ' + Object.prototype.toString.call(input) + ' and value: ' + input,
-							input: input
-						};
-					})
-				).forEach(function(testCase){
-					test(testCase.title, function(){
-						assert.throw(function(){
-							aControl.setView(testCase.input);
-						}, Error, 'Incorrect type of view component');
-					});
-				});
-			});
-
-			test('correct view instance', function(){
-				var view = new AView({});
-				assert.doesNotThrow(function(){
-					aControl.setView(view);
-				});
-				assert.equal(aControl.view, view, 'View was incorrectly set');
-			});
-		});
-
 		test('desctuct', function(){
 			assert.doesNotThrow(function(){
-				aControl.setView(new AView({}));
 				aControl.destruct();
 			});
 
-			assert.isNull(aControl.view, 'destruct() should set view to null');
 			assert.isTrue(AModeComponent.prototype.destruct.calledOnce, 'Parent\'s destruct() should be called');
 		});
 	});

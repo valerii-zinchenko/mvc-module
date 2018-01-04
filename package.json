@@ -23,6 +23,7 @@
     "coverage": "coverage"
   },
   "dependencies": {
+    "@valerii-zinchenko/observer": "^1.0.2",
     "class-wrapper": "^1.0.3",
     "lodash": "^4.17.4"
   },

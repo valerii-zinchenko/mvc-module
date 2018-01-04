@@ -47,10 +47,12 @@ module.exports = function(grunt) {
 					deps: {
 						'default': [
 							{'class-wrapper': 'ClassWrapper'},
+							{'@valerii-zinchenko/observer': 'Observer'},
 							{'lodash': '_'}
 						],
 						global: [
 							'class-wrapper',
+							'Observer',
 							'_'
 						]
 					}
